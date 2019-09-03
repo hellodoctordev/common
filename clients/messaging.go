@@ -1,18 +1,17 @@
 package clients
 
 import (
-	"hellodoctor/api"
 	"net/http"
 )
 
 type MessagingClient struct {
-	common.HttpServiceClient
+	HttpServiceClient
 }
 
 func NewMessagingClient() *MessagingClient {
 	return &MessagingClient{
-		common.HttpServiceClient{
-			ServiceHost: common.DefaultServiceHost,
+		HttpServiceClient{
+			ServiceHost: DefaultServiceHost,
 		},
 	}
 }
