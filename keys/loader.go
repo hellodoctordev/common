@@ -1,0 +1,36 @@
+package keys
+
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"reflect"
+	"strings"
+)
+
+func Load(keyType KeyType, env string) {
+	appRoot, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	keysRoot := fmt.Sprintf("%s/.keys", appRoot)
+	keyFile := fmt.Sprintf("%s/%s.%s.keys", keysRoot, keyType.GetKeyFilePrefix(), env)
+
+	v := reflect.ValueOf(keyType).Elem()
+
+	keyFileData, err := ioutil.ReadFile(keyFile)
+	if err != nil {
+		panic(err)
+	}
+
+	keys := strings.Split(string(keyFileData), "\n")
+	for _, key := range keys {
+		if len(key) == 0 {
+			continue
+		}
+
+		keyData := strings.Split(key, "=")
+		v.FieldByName(keyData[0]).SetString(keyData[1])
+	}
+}

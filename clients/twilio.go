@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"github.com/hellodoctordev/common/keys"
 	"github.com/hellodoctordev/gotwilio"
 	"io/ioutil"
 	"log"
@@ -10,21 +11,14 @@ import (
 	"time"
 )
 
-const (
-	AccountSID = "AC7bc6ffc0bfc7e827324b14bab30a02ca"
-	AuthToken = "dd39ec20c57107d5cc27cb29983da79a"
-	APIKeySID = "SKff8edd07d763692383726364d868d921"
-	APIKeySecret = "NfxxSqWorskCFNWnHacAW8WtiRrNZJ3C"
-)
-
 func NewTwilioClient() *gotwilio.Twilio {
-	return gotwilio.NewTwilioClient(AccountSID, AuthToken)
+	return gotwilio.NewTwilioClient(keys.TwilioKeys.AccountSID, keys.TwilioKeys.AuthToken)
 }
 
 func NewApplicationAccessToken(twilio *gotwilio.Twilio, identity string) *gotwilio.AccessToken {
 	token := twilio.NewAccessToken()
-	token.APIKeySid = APIKeySID
-	token.APIKeySecret = APIKeySecret
+	token.APIKeySid = keys.TwilioKeys.APIKeySID
+	token.APIKeySecret = keys.TwilioKeys.APIKeySecret
 	token.ExpiresAt = time.Now().Add(time.Hour * 4)
 	token.NotBefore = time.Now()
 	token.Identity = identity
