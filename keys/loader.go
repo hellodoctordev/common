@@ -3,6 +3,7 @@ package keys
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"reflect"
 	"strings"
@@ -21,7 +22,8 @@ func Load(keyType KeyType, env string) {
 
 	keyFileData, err := ioutil.ReadFile(keyFile)
 	if err != nil {
-		panic(err)
+		log.Printf("error occurred reading keyFile %s: %s", keyFile, err)
+		return
 	}
 
 	keys := strings.Split(string(keyFileData), "\n")
