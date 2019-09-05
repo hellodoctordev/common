@@ -17,3 +17,13 @@ type TwilioKey struct {
 func (twilioKey *TwilioKey) GetKeyFilePrefix() string {
 	return "twilio"
 }
+
+type InternalServiceKey struct {
+	KeyType
+	ServiceToken	string
+	ServiceSecret	string
+}
+
+func (internalKey *InternalServiceKey) GetKeyFilePrefix() string {
+	return "internal"
+}

@@ -3,12 +3,19 @@ package auth
 import (
 	"context"
 	firebase "firebase.google.com/go"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/hellodoctordev/common/keys"
 	"log"
 	"net/http"
 )
 
 func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
 	return Authenticated(handlerFunc)
+}
+
+func WithInternalAuth(handlerFunc http.HandlerFunc) http.Handler {
+	return AuthenticatedInternalService(handlerFunc)
 }
 
 func Authenticated(next http.Handler) http.Handler {
@@ -34,8 +41,32 @@ func Authenticated(next http.Handler) http.Handler {
 
 		r.Header.Set("X-User-UID", token.UID)
 
-		log.Printf("Verified ID token: %v\n", token)
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		next.ServeHTTP(w, r)
+	})
+}
+
+func AuthenticatedInternalService(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tokenString := r.Header.Get("X-Internal-Authorization")
+
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+
+			return keys.InternalServiceKeys.ServiceSecret, nil
+		})
+
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }
