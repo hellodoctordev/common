@@ -1,13 +1,12 @@
 package clients
 
 import (
+	"encoding/json"
 	"github.com/hellodoctordev/common/keys"
 	"github.com/hellodoctordev/gotwilio"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"reflect"
 	"time"
 )
 
@@ -33,18 +32,5 @@ func UnmarshalRequestBody(r *http.Request, o interface{}) (err error) {
 		return
 	}
 
-	params, _ := url.ParseQuery(string(body))
-
-	v := reflect.ValueOf(o).Elem()
-	typeOfO := v.Type()
-
-	for i := 0; i < v.NumField(); i++ {
-		typeField := typeOfO.Field(i)
-
-		value := params.Get(typeField.Name)
-
-		v.FieldByName(typeField.Name).SetString(value)
-	}
-
-	return
+	return json.Unmarshal(body, o)
 }
