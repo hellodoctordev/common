@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
+	return Authenticated(handlerFunc)
+}
+
 func Authenticated(next http.Handler) http.Handler {
 	app, err := firebase.NewApp(context.Background(), nil)
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DefaultServiceHost = "http://stage.api.hellodoctor.com.mx"
+	DefaultServiceHost = "http://api.stage.hellodoctor.com.mx"
 )
 
 type HttpServiceClient struct {
