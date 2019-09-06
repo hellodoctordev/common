@@ -27,3 +27,13 @@ type InternalServiceKey struct {
 func (internalKey *InternalServiceKey) GetKeyFilePrefix() string {
 	return "internal"
 }
+
+type GoogleOAuthKey struct {
+	KeyType
+	ClientID		string
+	ClientSecret	string
+}
+
+func (googleKey *GoogleOAuthKey) GetKeyFilePrefix() string {
+	return "google-oauth"
+}
