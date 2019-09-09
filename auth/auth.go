@@ -15,7 +15,7 @@ func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
 }
 
 func WithAuthRole(role string, handlerFunc http.HandlerFunc) http.Handler {
-	return WithRole(role, Authenticated(handlerFunc))
+	return Authenticated(WithRole(role, handlerFunc))
 }
 
 func WithInternalAuth(handlerFunc http.HandlerFunc) http.Handler {
