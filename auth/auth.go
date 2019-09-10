@@ -73,7 +73,7 @@ func AuthenticatedInternalService(next http.Handler) http.Handler {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
 
-			return keys.InternalServiceKeys.ServiceSecret, nil
+			return []byte(keys.InternalServiceKeys.ServiceSecret), nil
 		})
 
 		if err != nil {
