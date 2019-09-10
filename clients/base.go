@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/hellodoctordev/common/keys"
 	"log"
 	"net/http"
 )
@@ -22,8 +23,18 @@ func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Respon
 
 	reqBody, err := json.Marshal(body)
 	if err != nil {
-		log.Fatalf("error occurred marshalling interface: %s", err)
+		log.Printf("error occurred marshalling interface: %s", err)
+		return
 	}
 
-	return http.DefaultClient.Post(url, "application/json", bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		log.Printf("error occurred creating new request: %s", err)
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Internal-Authorization", keys.InternalServiceKeys.ServiceToken)
+
+	return client.Do(req)
 }
