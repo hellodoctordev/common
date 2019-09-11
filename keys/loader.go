@@ -15,9 +15,8 @@ func Load(keyType KeyType, env string) {
 		panic(err)
 	}
 
-	appRoot = "/keys"
-
 	keysRoot := fmt.Sprintf("%s/.keys", appRoot)
+	keysRoot = "/keys"
 	keyFile := fmt.Sprintf("%s/%s.%s.keys", keysRoot, keyType.GetKeyFilePrefix(), env)
 
 	v := reflect.ValueOf(keyType).Elem()
