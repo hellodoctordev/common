@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DefaultServiceHost = "http://api.stage.hellodoctor.com.mx"
+	DefaultServiceHost = "http://d1049eec.ngrok.io"
 )
 
 type HttpServiceClient struct {
