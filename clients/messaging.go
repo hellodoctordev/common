@@ -2,6 +2,7 @@ package clients
 
 import (
 	"net/http"
+	"os"
 )
 
 type MessagingClient struct {
@@ -9,9 +10,15 @@ type MessagingClient struct {
 }
 
 func NewMessagingClient() *MessagingClient {
+	serviceHost := os.Getenv("BASE_SERVICE_URL")
+
+	if len(serviceHost) == 0 {
+		serviceHost = DefaultServiceHost
+	}
+
 	return &MessagingClient{
 		HttpServiceClient{
-			ServiceHost: DefaultServiceHost,
+			ServiceHost: serviceHost,
 		},
 	}
 }

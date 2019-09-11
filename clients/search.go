@@ -4,6 +4,7 @@ import (
 	"github.com/hellodoctordev/common/types"
 	"log"
 	"net/http"
+	"os"
 )
 
 type SearchClient struct {
@@ -11,10 +12,16 @@ type SearchClient struct {
 }
 
 func NewSearchClient() *SearchClient {
+	serviceHost := os.Getenv("BASE_SERVICE_URL")
+
+	if len(serviceHost) == 0 {
+		serviceHost = DefaultServiceHost
+	}
+
 	return &SearchClient{
 		HttpServiceClient{
 			Client: http.DefaultClient,
-			ServiceHost: DefaultServiceHost,
+			ServiceHost: serviceHost,
 		},
 	}
 }
