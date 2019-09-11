@@ -14,7 +14,7 @@ type TwilioKey struct {
 	TwimlApplicationSID string
 }
 
-func (twilioKey *TwilioKey) GetKeyFilePrefix() string {
+func (k *TwilioKey) GetKeyFilePrefix() string {
 	return "twilio"
 }
 
@@ -24,8 +24,18 @@ type InternalServiceKey struct {
 	ServiceSecret	string
 }
 
-func (internalKey *InternalServiceKey) GetKeyFilePrefix() string {
+func (k *InternalServiceKey) GetKeyFilePrefix() string {
 	return "internal"
+}
+
+type AdminKey struct {
+	KeyType
+	AdminTokenIssuer string
+	AdminTokenSecret string
+}
+
+func (k *AdminKey) GetKeyFilePrefix() string {
+	return "admin"
 }
 
 type GoogleOAuthKey struct {
@@ -34,6 +44,6 @@ type GoogleOAuthKey struct {
 	ClientSecret	string
 }
 
-func (googleKey *GoogleOAuthKey) GetKeyFilePrefix() string {
+func (k *GoogleOAuthKey) GetKeyFilePrefix() string {
 	return "google-oauth"
 }

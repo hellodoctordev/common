@@ -2,25 +2,33 @@ package keys
 
 var TwilioKeys = initTwilioKeys()
 var InternalServiceKeys = initInternalServiceKeys()
+var AdminKeys = initAdminKeys()
 var GoogleOAuthKeys = initGoogleAuthKeys()
 
 func initTwilioKeys() TwilioKey {
-	var twilioKeys TwilioKey
-	Load(&twilioKeys, "stage")
+	var keys TwilioKey
+	Load(&keys, "stage")
 
-	return twilioKeys
+	return keys
 }
 
 func initInternalServiceKeys() InternalServiceKey {
-	var internalServiceKey InternalServiceKey
-	Load(&internalServiceKey, "stage")
+	var keys InternalServiceKey
+	Load(&keys, "stage")
 
-	return internalServiceKey
+	return keys
+}
+
+func initAdminKeys() AdminKey {
+	var keys AdminKey
+	Load(&keys, "stage")
+
+	return keys
 }
 
 func initGoogleAuthKeys() GoogleOAuthKey {
-	var googleOAuthKey GoogleOAuthKey
-	Load(&googleOAuthKey, "stage")
+	var keys GoogleOAuthKey
+	Load(&keys, "stage")
 
-	return googleOAuthKey
+	return keys
 }
