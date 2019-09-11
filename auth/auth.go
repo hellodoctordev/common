@@ -8,6 +8,7 @@ import (
 	"github.com/hellodoctordev/common/keys"
 	"log"
 	"net/http"
+	"os"
 )
 
 func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
@@ -20,6 +21,10 @@ func WithAuthRole(role string, handlerFunc http.HandlerFunc) http.Handler {
 
 func WithInternalAuth(handlerFunc http.HandlerFunc) http.Handler {
 	return AuthenticatedInternalService(handlerFunc)
+}
+
+func WithAdminAuth(handlerFunc http.HandlerFunc) http.Handler {
+	return AuthenticatedAdmin(handlerFunc)
 }
 
 func Authenticated(next http.Handler) http.Handler {
@@ -82,6 +87,40 @@ func AuthenticatedInternalService(next http.Handler) http.Handler {
 		}
 
 		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func AuthenticatedAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tokenString := r.Header.Get("X-Internal-Authorization")
+
+		adminTokenSecret := os.Getenv("ADMIN_TOKEN_SECRET")
+		adminTokenIssuer := os.Getenv("ADMIN_TOKEN_ISSUER")
+
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+
+			return []byte(adminTokenSecret), nil
+		})
+
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		if ok := token.Claims.(jwt.StandardClaims).VerifyIssuer(adminTokenIssuer, true); !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
