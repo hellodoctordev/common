@@ -8,17 +8,17 @@ import (
 )
 
 type DoctorESDocument struct {
-	UID                string           `json:"uid"`
-	DisplayName        string           `json:"displayName"`
-	FirstName          string           `json:"firstName"`
-	LastName           string           `json:"lastName"`
-	Specialties        []string         `json:"specialties"`
-	OfficeAddress      string           `json:"officeAddress"`
-	OfficePostalCode   string           `json:"officePostalCode"`
-	OfficeNeighborhood string           `json:"officeNeighborhood"`
-	OfficeCity         string           `json:"officeCity"`
-	OfficeState        string           `json:"officeState"`
-	OfficeCountry      string           `json:"officeCountry"`
+	UID                string            `json:"uid"`
+	DisplayName        string            `json:"displayName"`
+	FirstName          string            `json:"firstName"`
+	LastName           string            `json:"lastName"`
+	Specialties        []string          `json:"specialties"`
+	OfficeAddress      string            `json:"officeAddress"`
+	OfficePostalCode   string            `json:"officePostalCode"`
+	OfficeNeighborhood string            `json:"officeNeighborhood"`
+	OfficeCity         string            `json:"officeCity"`
+	OfficeState        string            `json:"officeState"`
+	OfficeCountry      string            `json:"officeCountry"`
 	OfficeGeoLocation  *elastic.GeoPoint `json:"officeGeoLocation"`
 }
 
@@ -60,9 +60,10 @@ type PatientESDocument struct {
 }
 
 type MessageESDocument struct {
-	UID         string    `json:"uid"`
-	Message     string    `json:"message"`
-	MessageType string    `json:"messageType"`
-	Sender      string    `json:"sender"`
-	SentTime    time.Time `json:"sentTime"`
+	UID            string    `json:"uid"`
+	ConsultationID string    `json:"consultationID"`
+	Message        string    `json:"message"`
+	MessageType    string    `json:"messageType"`
+	Sender         string    `json:"sender"`
+	SentTime       time.Time `json:"sentTime"`
 }
