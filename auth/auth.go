@@ -102,6 +102,9 @@ func AuthenticatedAdmin(next http.Handler) http.Handler {
 		adminTokenSecret := os.Getenv("ADMIN_TOKEN_SECRET")
 		adminTokenIssuer := os.Getenv("ADMIN_TOKEN_ISSUER")
 
+		log.Printf("s: %s", adminTokenSecret[0:4])
+		log.Printf("i: %s", adminTokenIssuer[0:1])
+
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -111,16 +114,20 @@ func AuthenticatedAdmin(next http.Handler) http.Handler {
 		})
 
 		if err != nil {
+			log.Printf("error: %s", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
 		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
+			log.Printf("token ok: %v", ok)
+			log.Printf("token valid: %v", token.Valid)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
 		if ok := token.Claims.(jwt.MapClaims).VerifyIssuer(adminTokenIssuer, true); !ok {
+			log.Printf("bad issuer")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
