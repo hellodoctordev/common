@@ -120,14 +120,10 @@ func AuthenticatedAdmin(next http.Handler) http.Handler {
 			return
 		}
 
-		standardClaims := token.Claims.(jwt.StandardClaims)
-
-		if ok := standardClaims.VerifyIssuer(adminTokenIssuer, true); !ok {
+		if ok := token.Claims.(jwt.MapClaims).VerifyIssuer(adminTokenIssuer, true); !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-
-		log.Printf("granted admin access to %s", standardClaims.Subject)
 
 		next.ServeHTTP(w, r)
 	})
