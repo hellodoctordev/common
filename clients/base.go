@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DefaultServiceHost = "http://d1049eec.ngrok.io"
+	DefaultServiceHost = "http://localhost:8080"
 )
 
 type HttpServiceClient struct {
