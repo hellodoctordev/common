@@ -19,7 +19,7 @@ type HttpServiceClient struct {
 }
 
 func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s", client.ServiceHost, path)
+	url := fmt.Sprintf("%s%s", client.ServiceHost, path)
 
 	reqBody, err := json.Marshal(body)
 	if err != nil {
