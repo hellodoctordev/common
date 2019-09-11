@@ -11,6 +11,7 @@ type SearchClient struct {
 func NewSearchClient() *SearchClient {
 	return &SearchClient{
 		HttpServiceClient{
+			Client: http.DefaultClient,
 			ServiceHost: DefaultServiceHost,
 		},
 	}
