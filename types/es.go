@@ -12,7 +12,7 @@ type DoctorESDocument struct {
 	DisplayName        string            `json:"displayName"`
 	FirstName          string            `json:"firstName"`
 	LastName           string            `json:"lastName"`
-	Specialties        []string          `json:"specialties"`
+	Specialties        []interface{}     `json:"specialties"`
 	OfficeAddress      string            `json:"officeAddress"`
 	OfficePostalCode   string            `json:"officePostalCode"`
 	OfficeNeighborhood string            `json:"officeNeighborhood"`
@@ -22,7 +22,7 @@ type DoctorESDocument struct {
 	OfficeGeoLocation  *elastic.GeoPoint `json:"officeGeoLocation"`
 }
 
-func FromUserData(uid string, userData map[string]interface{}) (doc *DoctorESDocument, err error) {
+func DoctorDocumentFromData(uid string, userData map[string]interface{}) (doc *DoctorESDocument, err error) {
 	role := userData["account"].(map[string]interface{})["role"]
 
 	if role != "provider" {
@@ -38,7 +38,7 @@ func FromUserData(uid string, userData map[string]interface{}) (doc *DoctorESDoc
 	doc.DisplayName = profileData["displayName"].(string)
 	doc.FirstName = profileData["firstName"].(string)
 	doc.LastName = profileData["lastName"].(string)
-	doc.Specialties = profileData["specialties"].([]string)
+	doc.Specialties = profileData["specialties"].([]interface{})
 	doc.OfficeAddress = officeData["address"].(string)
 	doc.OfficePostalCode = officeData["postalCode"].(string)
 	doc.OfficeNeighborhood = officeData["neighborhood"].(string)
