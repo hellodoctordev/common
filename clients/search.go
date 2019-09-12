@@ -27,7 +27,7 @@ func NewSearchClient() *SearchClient {
 }
 
 func (client *SearchClient) PostDoctor(uid string, doctorData map[string]interface{}) (res *http.Response, err error) {
-	doctorDocument, err := types.FromUserData(uid, doctorData)
+	doctorDocument, err := types.DoctorDocumentFromData(uid, doctorData)
 	if err != nil {
 		log.Printf("error occurred creating doctor document: %s", err)
 		return
