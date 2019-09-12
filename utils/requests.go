@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func ReadBody(r *http.Request, o interface{}) (err error) {
+func ReadRequestBody(r *http.Request, o interface{}) (err error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("error reading body: %s", err)

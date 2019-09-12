@@ -53,10 +53,10 @@ func DoctorDocumentFromData(uid string, userData map[string]interface{}) (doc *D
 }
 
 type PatientESDocument struct {
-	UID       string `json:"uid"`
-	FullName  string `json:"fullName"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	UID         string `json:"uid"`
+	DisplayName string `json:"displayName"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
 }
 
 type MessageESDocument struct {
