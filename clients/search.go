@@ -1,8 +1,6 @@
 package clients
 
 import (
-	"github.com/hellodoctordev/common/types"
-	"log"
 	"net/http"
 	"os"
 )
@@ -24,14 +22,4 @@ func NewSearchClient() *SearchClient {
 			ServiceHost: serviceHost,
 		},
 	}
-}
-
-func (client *SearchClient) PostDoctor(uid string, doctorData map[string]interface{}) (res *http.Response, err error) {
-	doctorDocument, err := types.DoctorDocumentFromData(uid, doctorData)
-	if err != nil {
-		log.Printf("error occurred creating doctor document: %s", err)
-		return
-	}
-
-	return client.Post("/search/internal/doctors", doctorDocument)
 }
