@@ -46,8 +46,8 @@ func DoctorDocumentFromData(uid string, userData map[string]interface{}) (doc *D
 	doc.OfficeState = officeData["state"].(string)
 	doc.OfficeCountry = officeData["country"].(string)
 
-	geoData := officeData["geoLocation"].(map[string]float64)
-	doc.OfficeGeoLocation = elastic.GeoPointFromLatLon(geoData["lat"], geoData["lon"])
+	geoData := officeData["geoLocation"].(map[string]interface{})
+	doc.OfficeGeoLocation = elastic.GeoPointFromLatLon(geoData["lat"].(float64), geoData["lon"].(float64))
 
 	return
 }
