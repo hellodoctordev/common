@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"cloud.google.com/go/firestore"
 	"context"
 	"fmt"
 	"github.com/hellodoctordev/common/firebase"
@@ -32,62 +33,77 @@ var (
 	}
 )
 
-func GetGoogleUserOAuthClient(userID string, userOAuthCode ...string) (client *http.Client, err error) {
-	type StoredOAuthToken struct {
-		Token    oauth2.Token
-		Provider string
-	}
+type storedOAuthToken struct {
+	Token    oauth2.Token
+	Provider string
+}
 
+func RegisterUserOAuthToken(userID string, userOAuthCode string) (err error) {
 	ctx := context.Background()
 
-	userSnapshot, err := firestoreClient.Doc(fmt.Sprintf("users/%s", userID)).Get(ctx)
+	oauthConfig := getUserOAuthConfig(userID)
+
+	token, err := oauthConfig.Exchange(ctx, userOAuthCode, oauth2.AccessTypeOffline)
 	if err != nil {
-		log.Printf("error occurred getting user snapshot: %s", err)
+		log.Printf("error exchanging oauth token: %s", err)
 		return
 	}
 
-	role, _ := userSnapshot.DataAt("account.role")
+	// save oauth token to user collection
+	userTokensRef := firestoreClient.Collection(fmt.Sprintf("users/%s/oauthTokens", userID))
 
-	var oauthConfig  *oauth2.Config
+	storedTokenSnapshot, err := userTokensRef.
+		Where("provider", "==", "google").
+		Documents(ctx).
+		Next()
 
-	if role.(string) == "provider" {
-		oauthConfig = googleOAuthDoctorConfig
+	if err != nil {
+		// no stored token
+		oauthToken := storedOAuthToken{
+			Token:    *token,
+			Provider: "google",
+		}
+
+		_, _, err = userTokensRef.Add(ctx, oauthToken)
+		if err != nil {
+			log.Printf("error storing google oauth token: %s", err)
+		}
 	} else {
-		oauthConfig = googleOAuthPatientConfig
+		// update stored token
+		update := firestore.Update{Path: "Token", Value: *token}
+
+		_, err = storedTokenSnapshot.Ref.Update(ctx, []firestore.Update{update})
+		if err != nil {
+			log.Printf("error updating stored google oauth token: %s", err)
+		}
 	}
+
+	return
+}
+
+func GetGoogleUserOAuthClient(userID string) (client *http.Client, err error) {
+	ctx := context.Background()
+
+	oauthConfig := getUserOAuthConfig(userID)
 
 	userOAuthCollectionRef := firestoreClient.Collection(fmt.Sprintf("users/%s/oauthTokens", userID))
 
-	var oauthToken StoredOAuthToken
+	var oauthToken storedOAuthToken
 
 	userOAuth, err := userOAuthCollectionRef.
 		Where("Provider", "==", "google").
 		Documents(ctx).
 		Next()
 
-	if err != nil && len(userOAuthCode) == 1 {
-		token, err2 := oauthConfig.Exchange(ctx, userOAuthCode[0], oauth2.AccessTypeOffline)
-		if err2 != nil {
-			log.Printf("error exchanging oauth token: %s", err2)
-			return
-		}
+	if err != nil {
+		// no stored token was found
 
-		oauthToken := StoredOAuthToken{
-			Token:    *token,
-			Provider: "google",
-		}
-
-		_, _, err2 = userOAuthCollectionRef.Add(ctx, oauthToken)
-		if err2 != nil {
-			log.Printf("error storing user oauth: %s", err2)
-			return
-		}
-
-	} else if err != nil {
 		log.Printf("error getting user oauth: %s", err)
 		return
 
 	} else {
+		// stored token was found
+
 		err2 := userOAuth.DataTo(&oauthToken)
 		if err2 != nil {
 			log.Printf("error parsing user oauth: %s", err)
@@ -96,4 +112,20 @@ func GetGoogleUserOAuthClient(userID string, userOAuthCode ...string) (client *h
 	}
 
 	return oauth2.NewClient(ctx, oauthConfig.TokenSource(ctx, &oauthToken.Token)), nil
+}
+
+func getUserOAuthConfig(userID string) (config *oauth2.Config) {
+	userSnapshot, err := firestoreClient.Doc(fmt.Sprintf("users/%s", userID)).Get(context.Background())
+	if err != nil {
+		log.Printf("error occurred getting user snapshot: %s", err)
+		return
+	}
+
+	role, _ := userSnapshot.DataAt("account.role")
+
+	if role.(string) == "provider" {
+		return googleOAuthDoctorConfig
+	} else {
+		return googleOAuthPatientConfig
+	}
 }
