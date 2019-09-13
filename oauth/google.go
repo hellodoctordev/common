@@ -6,8 +6,8 @@ import (
 	"github.com/hellodoctordev/common/firebase"
 	"github.com/hellodoctordev/common/keys"
 	"golang.org/x/oauth2"
-	"google.golang.org/api/option"
 	"log"
+	"net/http"
 )
 
 var (
@@ -32,7 +32,7 @@ var (
 	}
 )
 
-func GetGoogleUserOAuthTokenSource(userID string, userOAuthCode ...string) (tokenSource option.ClientOption, err error) {
+func GetGoogleUserOAuthClient(userID string, userOAuthCode ...string) (client *http.Client, err error) {
 	type StoredOAuthToken struct {
 		Token    oauth2.Token
 		Provider string
@@ -95,5 +95,5 @@ func GetGoogleUserOAuthTokenSource(userID string, userOAuthCode ...string) (toke
 		}
 	}
 
-	return option.WithTokenSource(oauthConfig.TokenSource(ctx, &oauthToken.Token)), nil
+	return oauth2.NewClient(ctx, oauthConfig.TokenSource(ctx, &oauthToken.Token)), nil
 }
