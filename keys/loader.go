@@ -10,8 +10,12 @@ import (
 	"strings"
 )
 
+const (
+	keysBucket = "hellodoctor-staging-keys"
+)
+
 func Load(keyType KeyType, env string) {
-	keyFileData, err := getKeyFileData(keyType)
+	keyFileData, err := getKeyFileData(keyType, env)
 	if err != nil {
 		log.Printf("error occurred reading keyFileData for '%s': %s", keyType, err)
 		return
@@ -31,7 +35,7 @@ func Load(keyType KeyType, env string) {
 	}
 }
 
-func getKeyFileData(keyType KeyType) (data []byte, err error) {
+func getKeyFileData(keyType KeyType, env string) (data []byte, err error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
@@ -39,10 +43,9 @@ func getKeyFileData(keyType KeyType) (data []byte, err error) {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	env := "stage"
 	keyObjectName := fmt.Sprintf("%s.%s.keys", keyType.GetKeyFilePrefix(), env)
 
-	rc, err := client.Bucket("hellodoctor-staging-keys").Object(keyObjectName).NewReader(ctx)
+	rc, err := client.Bucket(keysBucket).Object(keyObjectName).NewReader(ctx)
 	if err != nil {
 		return
 	}

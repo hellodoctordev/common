@@ -40,8 +40,10 @@ func (k *AdminKey) GetKeyFilePrefix() string {
 
 type GoogleOAuthKey struct {
 	KeyType
-	ClientID		string
-	ClientSecret	string
+	DoctorClientID		string
+	DoctorClientSecret	string
+	PatientClientID		string
+	PatientClientSecret	string
 }
 
 func (k *GoogleOAuthKey) GetKeyFilePrefix() string {
