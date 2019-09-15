@@ -22,15 +22,14 @@ type DoctorESDocument struct {
 	OfficeGeoLocation  *elastic.GeoPoint `json:"officeGeoLocation"`
 }
 
-func DoctorDocumentFromData(uid string, userData map[string]interface{}) (doc *DoctorESDocument, err error) {
-	role := userData["account"].(map[string]interface{})["role"]
+func DoctorDocumentFromData(uid string, profileData map[string]interface{}) (doc *DoctorESDocument, err error) {
+	role := profileData["role"].(string)
 
 	if role != "provider" {
 		err = errors.New(fmt.Sprintf("invalid role '%s' for doctor document", role))
 		return
 	}
 
-	profileData := userData["profile"].(map[string]interface{})
 	officeData := profileData["office"].(map[string]interface{})
 
 	doc = &DoctorESDocument{}
