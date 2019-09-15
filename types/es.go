@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/olivere/elastic/v7"
+	"google.golang.org/genproto/googleapis/firestore/v1"
 	"time"
 )
 
@@ -46,8 +47,8 @@ func DoctorDocumentFromData(uid string, userData map[string]interface{}) (doc *D
 	doc.OfficeState = officeData["state"].(string)
 	doc.OfficeCountry = officeData["country"].(string)
 
-	geoData := officeData["geoLocation"].(map[string]interface{})
-	doc.OfficeGeoLocation = elastic.GeoPointFromLatLon(geoData["lat"].(float64), geoData["lon"].(float64))
+	geoData := officeData["geoLocation"].(firestore.Value_GeoPointValue)
+	doc.OfficeGeoLocation = elastic.GeoPointFromLatLon(geoData.GeoPointValue.Latitude, geoData.GeoPointValue.Longitude)
 
 	return
 }
