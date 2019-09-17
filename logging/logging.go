@@ -1,19 +1,41 @@
 package logging
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
-func Debug(message string) {
-	log.Printf("[DEBUG] %s", message)
+type LogLevel int
+
+const (
+	DEBUG LogLevel = iota
+	INFO
+	WARN
+	ERROR
+)
+
+func (a LogLevel) String() string {
+	return [...]string{"DEBUG", "INFO", "WARN", "ERROR"}[a]
 }
 
-func Info(message string) {
-	log.Printf("[INFO] %s", message)
+func Debug(format string, v... interface{}) {
+	printLog(DEBUG, format, v)
 }
 
-func Warn(message string) {
-	log.Printf("[WARN] %s", message)
+func Info(format string, v... interface{}) {
+	printLog(INFO, format, v)
 }
 
-func Error(message string) {
-	log.Printf("[ERROR] %s", message)
+func Warn(format string, v... interface{}) {
+	printLog(WARN, format, v)
+}
+
+func Error(format string, v... interface{}) {
+	printLog(ERROR, format, v)
+}
+
+func printLog(level LogLevel, format string, v... interface{}) {
+	message := fmt.Sprintf(format, v)
+
+	log.Printf(fmt.Sprintf("[%s] %s", level.String(), message))
 }
