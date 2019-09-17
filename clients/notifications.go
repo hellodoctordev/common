@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"github.com/hellodoctordev/common/types"
 	"net/http"
 	"os"
 )
@@ -37,6 +38,18 @@ func (client *NotificationClient) ConsultationMessageSent(senderUserUID string, 
 	}
 
 	return client.Post("/notifications/consultation-message-sent", req)
+}
+
+type ConsultationRequestedRequest struct {
+	ConsultationRequest  types.ConsultationRequest `json:"consultationRequest"`
+}
+
+func (client *NotificationClient) ConsultationRequested(consultationRequest types.ConsultationRequest) (*http.Response, error) {
+	req := ConsultationRequestedRequest{
+		ConsultationRequest: consultationRequest,
+	}
+
+	return client.Post("/notifications/consultation-requested", req)
 }
 
 type VideoConsultationStartedRequest struct {
