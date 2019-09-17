@@ -19,6 +19,7 @@ func NewNotificationClient() *NotificationClient {
 
 	return &NotificationClient{
 		HttpServiceClient{
+			Client: http.DefaultClient,
 			ServiceHost: serviceHost,
 		},
 	}
