@@ -1,14 +1,11 @@
 package utils
 
-func Contains(array []interface{}, item interface{}) bool {
-	contains := false
-
-	for _, value := range array {
+func ContainsString(array []string, value string) bool {
+	for _, item := range array {
 		if item == value {
-			contains = true
-			break
+			return true
 		}
 	}
 
-	return contains
+	return false
 }
