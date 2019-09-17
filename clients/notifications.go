@@ -23,18 +23,34 @@ func NewNotificationClient() *NotificationClient {
 	}
 }
 
-func (client *NotificationClient) ConsultationMessageSent(senderUserUID string, consultationID string, messageText string) (*http.Response, error) {
-	type consultationMessageSentRequest struct {
-		SenderUserUID		string		`json:"senderUserUID"`
-		ConsultationID	string		`json:"consultationID"`
-		MessageText			string		`json:"messageText"`
-	}
+type ConsultationMessageSentRequest struct {
+	SenderUserUID		string		`json:"senderUserUID"`
+	ConsultationID	string		`json:"consultationID"`
+	MessageText			string		`json:"messageText"`
+}
 
-	req := consultationMessageSentRequest{
+func (client *NotificationClient) ConsultationMessageSent(senderUserUID string, consultationID string, messageText string) (*http.Response, error) {
+	req := ConsultationMessageSentRequest{
 		SenderUserUID: senderUserUID,
 		ConsultationID: consultationID,
 		MessageText: messageText,
 	}
 
 	return client.Post("/notifications/consultation-message-sent", req)
+}
+
+type VideoConsultationStartedRequest struct {
+	InitiatedByUserUID string `json:"initiatedByUserUID"`
+	ConsultationID string `json:"consultationID"`
+	RoomSID string `json:"roomSID"`
+}
+
+func (client *NotificationClient) VideoConsultationStarted(initiatedByUserUID string, consultationID string, roomSID string) (*http.Response, error) {
+	req := VideoConsultationStartedRequest{
+		InitiatedByUserUID: initiatedByUserUID,
+		ConsultationID: consultationID,
+		RoomSID: roomSID,
+	}
+
+	return client.Post("/notifications/video-consultation-started", req)
 }
