@@ -18,6 +18,7 @@ func NewMessagingClient() *MessagingClient {
 
 	return &MessagingClient{
 		HttpServiceClient{
+			Client: http.DefaultClient,
 			ServiceHost: serviceHost,
 		},
 	}

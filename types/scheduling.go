@@ -55,7 +55,6 @@ func (i *Interval) Overlaps(i2 Interval) bool {
 		i2.Start.Before(i.Start) && i2.End.After(i.Start)
 }
 
-
 type ConsultationRequest struct {
 	ConsultationID   string   `json:"consultationID"`
 	ConsultationType string   `json:"consultationType"`
