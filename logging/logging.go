@@ -35,7 +35,7 @@ func Error(format string, v... interface{}) {
 }
 
 func printLog(level LogLevel, format string, v... interface{}) {
-	message := fmt.Sprintf(format, v)
+	message := fmt.Sprintf(format, v...)
 
 	log.Printf(fmt.Sprintf("[%s] %s", level.String(), message))
 }
