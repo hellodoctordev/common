@@ -17,7 +17,7 @@ type FirestoreBillingSettings struct {
 }
 
 type FirestoreBilling struct {
-	Billing FirestoreBillingSettings `firestore:"billing",json:"billing"`
+	Settings FirestoreBillingSettings `firestore:"settings",json:"settings"`
 }
 
 type FirestoreDoctorUser struct {
