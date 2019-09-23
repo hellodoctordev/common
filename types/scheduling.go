@@ -56,8 +56,8 @@ func (i *Interval) Overlaps(i2 Interval) bool {
 }
 
 type ConsultationRequest struct {
-	ConsultationID   string   `json:"consultationID"`
-	ConsultationType string   `json:"consultationType"`
-	RequestedTime    Interval `json:"requestedTime"`
-	PatientUserID    string   `json:"patientUserID"`
+	ConsultationID   string   `firestore:"consultationID" json:"consultationID"`
+	ConsultationType string   `firestore:"consultationType" json:"consultationType"`
+	RequestedTime    Interval `firestore:"requestedTime" json:"requestedTime"`
+	PatientUserID    string   `firestore:"patientUserID" json:"patientUserID"`
 }
