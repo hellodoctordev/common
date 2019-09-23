@@ -6,8 +6,8 @@ import (
 )
 
 type Interval struct {
-	Start time.Time `json:"start"`
-	End   time.Time `json:"end"`
+	Start time.Time `firestore:"start" json:"start"`
+	End   time.Time `firestore:"end" json:"end"`
 }
 
 func NewInterval(start time.Time, end time.Time) (interval Interval, err error) {
