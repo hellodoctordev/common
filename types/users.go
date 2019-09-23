@@ -12,9 +12,9 @@ type FirestoreBillingSettingsConsultation struct {
 }
 
 type FirestoreBillingSettings struct {
-	ChatConsultations  FirestoreBillingSettingsConsultation `firestore:"chatConsultations" json:"chatConsultations"`
-	VoiceConsultations FirestoreBillingSettingsConsultation `firestore:"voiceConsultations" json:"voiceConsultations"`
-	VideoConsultations FirestoreBillingSettingsConsultation `firestore:"videoConsultations" json:"videoConsultations"`
+	ChatConsultation  FirestoreBillingSettingsConsultation `firestore:"chatConsultation" json:"chatConsultation"`
+	VoiceConsultation FirestoreBillingSettingsConsultation `firestore:"voiceConsultation" json:"voiceConsultation"`
+	VideoConsultation FirestoreBillingSettingsConsultation `firestore:"videoConsultation" json:"videoConsultation"`
 }
 
 type FirestoreBilling struct {
