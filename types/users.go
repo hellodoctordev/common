@@ -6,8 +6,9 @@ type FirestoreBillingSettingsConsultationPrice struct {
 }
 
 type FirestoreBillingSettingsConsultation struct {
-	BillingType string `firestore:"billingType",json:"billingType"`
-	IsEnabled   bool   `firestore:"isEnabled",json:"isEnabled"`
+	BillingPrice FirestoreBillingSettingsConsultationPrice `firestore:"billingPrice",json:"billingPrice"`
+	BillingType  string                                    `firestore:"billingType",json:"billingType"`
+	IsEnabled    bool                                      `firestore:"isEnabled",json:"isEnabled"`
 }
 
 type FirestoreBillingSettings struct {
