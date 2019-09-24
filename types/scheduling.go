@@ -55,9 +55,21 @@ func (i *Interval) Overlaps(i2 Interval) bool {
 		i2.Start.Before(i.Start) && i2.End.After(i.Start)
 }
 
+type ConsultationType int
+
+const (
+	VideoConsultation ConsultationType = iota
+	VoiceConsultation
+	ChatConsultation
+)
+
+func (a ConsultationType) String() string {
+	return [...]string{"videoConsultation", "voiceConsultation", "chatConsultation"}[a]
+}
+
 type ConsultationRequest struct {
-	ConsultationID   string   `firestore:"consultationID" json:"consultationID"`
-	ConsultationType string   `firestore:"consultationType" json:"consultationType"`
-	RequestedTime    Interval `firestore:"requestedTime" json:"requestedTime"`
-	PatientUserID    string   `firestore:"patientUserID" json:"patientUserID"`
+	ConsultationID   string           `firestore:"consultationID" json:"consultationID"`
+	ConsultationType ConsultationType `firestore:"consultationType" json:"consultationType"`
+	RequestedTime    Interval         `firestore:"requestedTime" json:"requestedTime"`
+	PatientUserID    string           `firestore:"patientUserID" json:"patientUserID"`
 }
