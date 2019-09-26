@@ -42,10 +42,10 @@ func (client *NotificationClient) ConsultationMessageSent(senderUserUID string, 
 }
 
 type ConsultationRequestedRequest struct {
-	ConsultationRequest  types.ConsultationRequest `json:"consultationRequest"`
+	ConsultationRequest  types.ConsultationSessionRequest `json:"consultationRequest"`
 }
 
-func (client *NotificationClient) ConsultationRequested(consultationRequest types.ConsultationRequest) (*http.Response, error) {
+func (client *NotificationClient) ConsultationRequested(consultationRequest types.ConsultationSessionRequest) (*http.Response, error) {
 	req := ConsultationRequestedRequest{
 		ConsultationRequest: consultationRequest,
 	}
