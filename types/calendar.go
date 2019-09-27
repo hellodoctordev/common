@@ -37,5 +37,5 @@ type CalendarEventDocument struct {
 	Start        time.Time               `firestore:"start"`
 	End          time.Time               `firestore:"end"`
 	Availability Availability            `firestore:"availability"`
-	Participants []firestore.DocumentRef `firestore:"participants"`
+	Participants []*firestore.DocumentRef `firestore:"participants"`
 }
