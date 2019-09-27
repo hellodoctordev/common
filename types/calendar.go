@@ -27,7 +27,7 @@ type CalendarEvent interface {
 	Start() time.Time
 	End() time.Time
 	Availability() Availability
-	Participants() []firestore.DocumentRef
+	Participants() []*firestore.DocumentRef
 }
 
 type CalendarEventDocument struct {
