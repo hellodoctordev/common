@@ -88,6 +88,10 @@ func (c *ConsultationSessionRequest) Title() string {
 	return fmt.Sprintf("Consultation requested by %s", patientUserDisplayName)
 }
 
+func (c *ConsultationSessionRequest) Description() string {
+	return ""
+}
+
 func (c *ConsultationSessionRequest) Start() time.Time {
 	return c.RequestedTime.Start
 }
