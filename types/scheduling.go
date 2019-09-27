@@ -104,6 +104,6 @@ func (c *ConsultationSessionRequest) Availability() Availability {
 	return Pending
 }
 
-func (c *ConsultationSessionRequest) Participants() []firestore.DocumentRef {
-	return []firestore.DocumentRef{c.PatientUser}
+func (c *ConsultationSessionRequest) Participants() []*firestore.DocumentRef {
+	return []*firestore.DocumentRef{c.PatientUser}
 }
