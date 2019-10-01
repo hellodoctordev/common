@@ -1,4 +1,4 @@
-package types
+package commonTypes
 
 import "cloud.google.com/go/firestore"
 
