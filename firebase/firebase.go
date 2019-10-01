@@ -6,6 +6,7 @@ import (
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
 	"firebase.google.com/go/messaging"
+	"firebase.google.com/go/storage"
 	"log"
 )
 
@@ -50,6 +51,26 @@ func NewCloudMessagingClient() *messaging.Client {
 	}
 
 	client, err := app.Messaging(ctx)
+	if err != nil {
+		log.Fatalf("error initializing client: %v\n", err)
+	}
+
+	return client
+}
+
+func NewCloudStorageClient() *storage.Client {
+	ctx := context.Background()
+
+	config := &firebase.Config{
+		StorageBucket: "hellodoctor-staging.appspot.com",
+	}
+
+	app, err := firebase.NewApp(ctx, config)
+	if err != nil {
+		log.Fatalf("error initializing app: %v\n", err)
+	}
+
+	client, err := app.Storage(ctx)
 	if err != nil {
 		log.Fatalf("error initializing client: %v\n", err)
 	}
