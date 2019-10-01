@@ -1,8 +1,10 @@
 package clients
 
 import (
+	"cloud.google.com/go/firestore"
 	"net/http"
 	"os"
+	"time"
 )
 
 type NotificationClient struct {
@@ -18,7 +20,7 @@ func NewNotificationClient() *NotificationClient {
 
 	return &NotificationClient{
 		HttpServiceClient{
-			Client: http.DefaultClient,
+			Client:      http.DefaultClient,
 			ServiceHost: serviceHost,
 		},
 	}
@@ -40,15 +42,15 @@ func (client *NotificationClient) ConsultationMessageSent(senderUserUID string, 
 	return client.Post("/notifications/consultation-message-sent", req)
 }
 
-type ConsultationRequestedRequest struct {
-	ConsultationSessionRequest ConsultationSessionRequest `json:"consultationSessionRequest"`
+type ConsultationSessionRequestedRequest struct {
+	Consultation       *firestore.DocumentRef `json:"consultationRef"`
+	PatientUser        *firestore.DocumentRef `json:"patientUserRef"`
+	ConsultationType   string                 `json:"consultationType"`
+	RequestedStartTime time.Time              `json:"requestedStartTime"`
+	RequestedEndTime   time.Time              `json:"requestedEndTime"`
 }
 
-func (client *NotificationClient) ConsultationRequested(consultationRequest ConsultationSessionRequest) (*http.Response, error) {
-	req := ConsultationRequestedRequest{
-		ConsultationSessionRequest: consultationRequest,
-	}
-
+func (client *NotificationClient) ConsultationSessionRequested(req ConsultationSessionRequestedRequest) (*http.Response, error) {
 	return client.Post("/notifications/consultation-requested", req)
 }
 
