@@ -1,4 +1,4 @@
-package types
+package commonTypes
 
 import (
 	"cloud.google.com/go/firestore"
@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/hellodoctordev/common/firebase"
 	"github.com/hellodoctordev/common/logging"
+	"hellodoctor/scheduling/x/types"
 	"time"
 )
 
@@ -67,8 +68,8 @@ type ConsultationSessionRequest struct {
 	RequestedTime    Interval              `firestore:"requestedTime" json:"requestedTime"`
 }
 
-func (c *ConsultationSessionRequest) Type() EventType {
-	return EventTypeConsultationRequest
+func (c *ConsultationSessionRequest) Type() types.EventType {
+	return types.EventTypeConsultationRequest
 }
 
 func (c *ConsultationSessionRequest) Title() string {
@@ -100,8 +101,8 @@ func (c *ConsultationSessionRequest) End() time.Time {
 	return c.RequestedTime.End
 }
 
-func (c *ConsultationSessionRequest) Availability() Availability {
-	return Pending
+func (c *ConsultationSessionRequest) Availability() types.Availability {
+	return types.Pending
 }
 
 func (c *ConsultationSessionRequest) Participants() []*firestore.DocumentRef {
