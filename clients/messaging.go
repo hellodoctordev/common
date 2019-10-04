@@ -18,25 +18,25 @@ func NewMessagingClient() *MessagingClient {
 
 	return &MessagingClient{
 		HttpServiceClient{
-			Client: http.DefaultClient,
+			Client:      http.DefaultClient,
 			ServiceHost: serviceHost,
 		},
 	}
 }
 
 type CreateChatRequest struct {
-	PatientUserUID    string `json:"patientUserUID"`
-	DoctorUserUID string `json:"doctorUserUID"`
+	PatientUserUID  string `json:"patientUserUID"`
+	ProviderUserUID string `json:"providerUserUID"`
 }
 
 type CreateChatResponse struct {
 	ChatID string `json:"chatID"`
 }
 
-func (client *MessagingClient) CreateChat(patientUID, doctorUserUID string) (*http.Response, error) {
+func (client *MessagingClient) CreateChat(patientUID, providerUserUID string) (*http.Response, error) {
 	req := CreateChatRequest{
-		PatientUserUID:    patientUID,
-		DoctorUserUID: doctorUserUID,
+		PatientUserUID:  patientUID,
+		ProviderUserUID: providerUserUID,
 	}
 
 	return client.Post("/messaging/internal/chats", req)
@@ -44,19 +44,19 @@ func (client *MessagingClient) CreateChat(patientUID, doctorUserUID string) (*ht
 
 func (client *MessagingClient) SendConsultationMessage(senderId string, consultationID string, message string, contentType string, messageType string) (*http.Response, error) {
 	type sendConsultationMessageRequest struct {
-		SenderID		string		`json:"senderID"`
-		ConsultationID	string		`json:"consultationID"`
-		Message			string		`json:"message"`
-		ContentType		string		`json:"contentType"`
-		MessageType		string		`json:"messageType"`
+		SenderID       string `json:"senderID"`
+		ConsultationID string `json:"consultationID"`
+		Message        string `json:"message"`
+		ContentType    string `json:"contentType"`
+		MessageType    string `json:"messageType"`
 	}
 
 	req := sendConsultationMessageRequest{
-		SenderID: senderId,
+		SenderID:       senderId,
 		ConsultationID: consultationID,
-		Message: message,
-		ContentType: contentType,
-		MessageType: messageType,
+		Message:        message,
+		ContentType:    contentType,
+		MessageType:    messageType,
 	}
 
 	return client.Post("/messages/send", req)
