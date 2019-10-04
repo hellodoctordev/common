@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 )
@@ -40,6 +41,25 @@ func (client *MessagingClient) CreateChat(patientUID, providerUserUID string) (*
 	}
 
 	return client.Post("/messaging/internal/chats", req)
+}
+
+type SendChatMessageRequest struct {
+	ChatID      string `json:"chatID"`
+	SenderUID   string `json:"senderUID"`
+	Message     string `json:"message"`
+	ContentType string `json:"contentType"`
+	MessageType string `json:"messageType"`
+}
+
+func (client *MessagingClient) SendChatMessage(chatID, senderUID, message, contentType, messageType string) (*http.Response, error) {
+	req := SendChatMessageRequest{
+		SenderUID:   senderUID,
+		Message:     message,
+		ContentType: contentType,
+		MessageType: messageType,
+	}
+
+	return client.Post(fmt.Sprintf("/messaging/internal/chats/%s", chatID), req)
 }
 
 func (client *MessagingClient) SendConsultationMessage(senderId string, consultationID string, message string, contentType string, messageType string) (*http.Response, error) {
