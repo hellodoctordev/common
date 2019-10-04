@@ -25,21 +25,21 @@ func NewMessagingClient() *MessagingClient {
 }
 
 type CreateChatRequest struct {
-	MyUserUID    string `json:"myUserUID"`
-	TheirUserUID string `json:"theirUserUID"`
+	PatientUserUID    string `json:"patientUserUID"`
+	DoctorUserUID string `json:"doctorUserUID"`
 }
 
 type CreateChatResponse struct {
 	ChatID string `json:"chatID"`
 }
 
-func (client *MessagingClient) CreateChat(myUserUID, theirUserUID string) (*http.Response, error) {
+func (client *MessagingClient) CreateChat(patientUID, doctorUserUID string) (*http.Response, error) {
 	req := CreateChatRequest{
-		MyUserUID:    myUserUID,
-		TheirUserUID: theirUserUID,
+		PatientUserUID:    patientUID,
+		DoctorUserUID: doctorUserUID,
 	}
 
-	return client.Post("/messaging/chats", req)
+	return client.Post("/messaging/internal/chats", req)
 }
 
 func (client *MessagingClient) SendConsultationMessage(senderId string, consultationID string, message string, contentType string, messageType string) (*http.Response, error) {
