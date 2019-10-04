@@ -3,19 +3,20 @@ package utils
 import (
 	"encoding/json"
 	"github.com/hellodoctordev/common/logging"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-func ReadRequestBody(r *http.Request, o interface{}) (err error) {
-	body, err := ioutil.ReadAll(r.Body)
+func ReadBody(body io.Reader, o interface{}) (err error) {
+	bodyData, err := ioutil.ReadAll(body)
 	if err != nil {
 		log.Printf("error reading body: %s", err)
 		return
 	}
 
-	err = json.Unmarshal(body, o)
+	err = json.Unmarshal(bodyData, o)
 	if err != nil {
 		log.Printf("error unmarshaling payload: %s", err)
 	}
