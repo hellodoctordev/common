@@ -43,17 +43,14 @@ func (client *MessagingClient) CreateChat(patientUID, providerUserUID string) (*
 	return client.Post("/messaging/internal/chats", req)
 }
 
-type SendChatMessageRequest struct {
-	ChatID      string `json:"chatID"`
-	SenderUID   string `json:"senderUID"`
+type SendAutomatedChatMessageRequest struct {
 	Message     string `json:"message"`
 	ContentType string `json:"contentType"`
 	MessageType string `json:"messageType"`
 }
 
-func (client *MessagingClient) SendChatMessage(chatID, senderUID, message, contentType, messageType string) (*http.Response, error) {
-	req := SendChatMessageRequest{
-		SenderUID:   senderUID,
+func (client *MessagingClient) SendAutomatedChatMessage(chatID, message, contentType, messageType string) (*http.Response, error) {
+	req := SendAutomatedChatMessageRequest{
 		Message:     message,
 		ContentType: contentType,
 		MessageType: messageType,
