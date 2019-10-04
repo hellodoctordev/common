@@ -24,13 +24,17 @@ func NewMessagingClient() *MessagingClient {
 	}
 }
 
-func (client *MessagingClient) CreateChat(myUserUID, theirUserUID string) (*http.Response, error) {
-	type createChatRequest struct {
-		MyUserUID    string `json:"myUserUID"`
-		TheirUserUID string `json:"theirUserUID"`
-	}
+type CreateChatRequest struct {
+	MyUserUID    string `json:"myUserUID"`
+	TheirUserUID string `json:"theirUserUID"`
+}
 
-	req := createChatRequest{
+type CreateChatResponse struct {
+	ChatID string `json:"chatID"`
+}
+
+func (client *MessagingClient) CreateChat(myUserUID, theirUserUID string) (*http.Response, error) {
+	req := CreateChatRequest{
 		MyUserUID:    myUserUID,
 		TheirUserUID: theirUserUID,
 	}
