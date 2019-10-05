@@ -33,7 +33,7 @@ func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Respon
 		return
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-ConsultationType", "application/json")
 	req.Header.Set("X-Internal-Authorization", keys.InternalServiceKeys.ServiceToken)
 
 	return client.Do(req)
