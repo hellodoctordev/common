@@ -32,18 +32,18 @@ type ChatMessageSentRequest struct {
 	MessageText   string `json:"messageText"`
 }
 
-func (client *NotificationClient) ChatMessageSent(senderUserUID string, chatID string, messageText string) (*http.Response, error) {
+func (client *NotificationClient) ChatMessageSent(chatID, senderUserUID, messageText string) (*http.Response, error) {
 	req := ChatMessageSentRequest{
 		SenderUserUID: senderUserUID,
 		ChatID:        chatID,
 		MessageText:   messageText,
 	}
 
-	return client.Post("/notifications/consultation-message-sent", req)
+	return client.Post("/notifications/chat-message-sent", req)
 }
 
 type ConsultationRequestedRequest struct {
-	Chat *firestore.DocumentRef `json:"chatRef"`
+	Chat               *firestore.DocumentRef `json:"chatRef"`
 	Consultation       *firestore.DocumentRef `json:"consultationRef"`
 	PatientUser        *firestore.DocumentRef `json:"patientUserRef"`
 	ConsultationType   string                 `json:"consultationType"`
