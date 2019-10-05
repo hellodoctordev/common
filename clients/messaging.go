@@ -46,14 +46,12 @@ func (client *MessagingClient) CreateChat(patientUID, providerUserUID string) (*
 type SendAutomatedChatMessageRequest struct {
 	Message     string `json:"message"`
 	ContentType string `json:"contentType"`
-	MessageType string `json:"messageType"`
 }
 
 func (client *MessagingClient) SendAutomatedChatMessage(chatID, message, contentType, messageType string) (*http.Response, error) {
 	req := SendAutomatedChatMessageRequest{
 		Message:     message,
 		ContentType: contentType,
-		MessageType: messageType,
 	}
 
 	return client.Post(fmt.Sprintf("/messaging/internal/chats/%s", chatID), req)
@@ -65,7 +63,6 @@ type SendChatMessageRequest struct {
 	SenderID       string `json:"senderID"`
 	Message        string `json:"message"`
 	ContentType    string `json:"contentType"`
-	MessageType    string `json:"messageType"`
 }
 
 func (client *MessagingClient) SendChatMessage(chatID, consultationID, senderID, message, contentType, messageType string) (*http.Response, error) {
@@ -74,7 +71,6 @@ func (client *MessagingClient) SendChatMessage(chatID, consultationID, senderID,
 		ConsultationID: consultationID,
 		Message:        message,
 		ContentType:    contentType,
-		MessageType:    messageType,
 	}
 
 	return client.Post("/messages/send", req)
