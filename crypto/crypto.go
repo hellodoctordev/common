@@ -27,68 +27,68 @@ type UserPublicKeyData struct {
 	PublicKey string `firestore:"publicKey"`
 }
 
-type ConsultationPublicKeyData struct {
-	ConsultationID string `firestore:"consultationID"`
-	PublicKey      string `firestore:"publicKey"`
+type ChatPublicKeyData struct {
+	ChatID    string `firestore:"chatID"`
+	PublicKey string `firestore:"publicKey"`
 }
 
-type ConsultationParticipantPrivateKeyData struct {
+type ChatParticipantPrivateKeyData struct {
 	ParticipantUID             string `firestore:"participantUID"`
-	ConsultationID             string `firestore:"consultationID"`
-	ConsultationPublicKey      string `firestore:"consultationPublicKey"`
+	ChatID                     string `firestore:"consultationID"`
+	ChatPublicKey              string `firestore:"consultationPublicKey"`
 	EncodedEncryptedPrivateKey string `firestore:"encodedEncryptedPrivateKey"`
 	EncodedEncryptedAESKey     string `firestore:"encodedEncryptedAESKey"`
 	EncodedAESIV               string `firestore:"encodedAESIV"`
 }
 
-func GenerateConsultationKeys(consultationID string, participantRefs []*firestore.DocumentRef) {
+func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 	ctx := context.Background()
 
 	reader := rand.Reader
 
-	consultationKey, err := rsa.GenerateKey(reader, keyBitSize)
+	chatKey, err := rsa.GenerateKey(reader, keyBitSize)
 	if err != nil {
-		logging.Error("error generating keys for consultation %s: %s", consultationID, err)
+		logging.Error("error generating keys for chat %s: %s", chatID, err)
 		return
 	}
 
 	publicPem := pem.Block{
 		Type:  "RSA PUBLIC KEY",
-		Bytes: x509.MarshalPKCS1PublicKey(&consultationKey.PublicKey),
+		Bytes: x509.MarshalPKCS1PublicKey(&chatKey.PublicKey),
 	}
 
-	var consultationPublicKey strings.Builder
+	var chatPublicKey strings.Builder
 
-	err = pem.Encode(&consultationPublicKey, &publicPem)
+	err = pem.Encode(&chatPublicKey, &publicPem)
 	if err != nil {
-		logging.Error("error creating consultation public key string: %s", err)
+		logging.Error("error creating chat public key string: %s", err)
 		return
 	}
 
-	consultationPublicKeyData := ConsultationPublicKeyData{
-		ConsultationID: consultationID,
-		PublicKey:      consultationPublicKey.String(),
+	chatPublicKeyData := ChatPublicKeyData{
+		ChatID:    chatID,
+		PublicKey: chatPublicKey.String(),
 	}
 
-	_, _, err = firestoreClient.Collection("publicKeys").Add(ctx, consultationPublicKeyData)
+	_, _, err = firestoreClient.Collection("publicKeys").Add(ctx, chatPublicKeyData)
 	if err != nil {
-		logging.Error("error storing public consultationKey for consultation %s: %s", consultationID, err)
+		logging.Error("error storing public chatKey for consultation %s: %s", chatID, err)
 		return
 	}
 
-	consultationPrivateKeyBytes, err := x509.MarshalPKCS8PrivateKey(consultationKey)
+	chatPrivateKeyBytes, err := x509.MarshalPKCS8PrivateKey(chatKey)
 	if err != nil {
-		logging.Error("error marshaling consultation %s private key: %s", consultationID, err)
+		logging.Error("error marshaling consultation %s private key: %s", chatID, err)
 		return
 	}
 
-	consultationAESKey, err := generateNewAESKey()
+	chatAESKey, err := generateNewAESKey()
 	if err != nil {
 		logging.Error("error generating new AES key: %s", err)
 		return
 	}
 
-	encryptedConsultationPrivateKey, aesIV, err := encryptConsultationPrivateKey(consultationAESKey, consultationPrivateKeyBytes)
+	encryptedChatPrivateKey, aesIV, err := encryptChatPrivateKey(chatAESKey, chatPrivateKeyBytes)
 	if err != nil {
 		logging.Error("error encrypting private key: %s", err)
 		return
@@ -100,24 +100,24 @@ func GenerateConsultationKeys(consultationID string, participantRefs []*firestor
 			continue
 		}
 
-		encryptedConsultationAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantPublicKey, consultationAESKey)
+		encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantPublicKey, chatAESKey)
 		if err2 != nil {
-			logging.Warn("error occurred encrypting consultation %s private key for participant %s: %s", consultationID, participantRef.ID, err2)
+			logging.Warn("error occurred encrypting consultation %s private key for participant %s: %s", chatID, participantRef.ID, err2)
 			continue
 		}
 
-		consultationParticipantPrivateKey := ConsultationParticipantPrivateKeyData{
+		chatParticipantPrivateKey := ChatParticipantPrivateKeyData{
 			ParticipantUID:             participantRef.ID,
-			ConsultationID:             consultationID,
-			ConsultationPublicKey:      consultationPublicKey.String(),
-			EncodedEncryptedPrivateKey: hex.EncodeToString(encryptedConsultationPrivateKey),
-			EncodedEncryptedAESKey:     hex.EncodeToString(encryptedConsultationAESKeyBytes),
+			ChatID:                     chatID,
+			ChatPublicKey:              chatPublicKey.String(),
+			EncodedEncryptedPrivateKey: hex.EncodeToString(encryptedChatPrivateKey),
+			EncodedEncryptedAESKey:     hex.EncodeToString(encryptedChatAESKeyBytes),
 			EncodedAESIV:               hex.EncodeToString(aesIV),
 		}
 
-		_, _, err2 = firestoreClient.Collection("encryptedPrivateKeys").Add(ctx, consultationParticipantPrivateKey)
+		_, _, err2 = firestoreClient.Collection("encryptedPrivateKeys").Add(ctx, chatParticipantPrivateKey)
 		if err2 != nil {
-			logging.Warn("error occurred storing consultation %s private key for participant %s: %s", consultationID, participantRef.ID, err2)
+			logging.Warn("error occurred storing chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
 			continue
 		}
 	}
@@ -130,7 +130,7 @@ func getParticipantPublicKey(participantUID string) (participantPublicKey rsa.Pu
 		Next()
 
 	if err != nil {
-		logging.Warn("error occurred getting participant %s public consultationKey: %s", participantUID, err)
+		logging.Warn("error occurred getting participant %s public chatKey: %s", participantUID, err)
 		return
 	}
 
@@ -138,7 +138,7 @@ func getParticipantPublicKey(participantUID string) (participantPublicKey rsa.Pu
 
 	err = participantPublicKeySnapshot.DataTo(&participantPublicKeyData)
 	if err != nil {
-		logging.Warn("error occurred getting participant %s public consultationKey data: %s", participantUID, err)
+		logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err)
 		return
 	}
 
@@ -164,25 +164,25 @@ func generateNewAESKey() ([]byte, error) {
 	return key, nil
 }
 
-func encryptConsultationPrivateKey(aesKey []byte, consultationPrivateKeyBytes []byte) ([]byte, []byte, error) {
+func encryptChatPrivateKey(aesKey []byte, chatPrivateKeyBytes []byte) ([]byte, []byte, error) {
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
 		logging.Error(err.Error())
 		return nil, nil, err
 	}
 
-	paddedConsultationPrivateKeyBytes := pad(consultationPrivateKeyBytes)
-	encryptedConsultationPrivateKeyBytes := make([]byte, aes.BlockSize+len(paddedConsultationPrivateKeyBytes))
+	paddedChatPrivateKeyBytes := pad(chatPrivateKeyBytes)
+	encryptedChatPrivateKeyBytes := make([]byte, aes.BlockSize+len(paddedChatPrivateKeyBytes))
 
-	iv := encryptedConsultationPrivateKeyBytes[:aes.BlockSize]
+	iv := encryptedChatPrivateKeyBytes[:aes.BlockSize]
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return nil, nil, err
 	}
 
 	cfb := cipher.NewCBCEncrypter(block, iv)
-	cfb.CryptBlocks(encryptedConsultationPrivateKeyBytes[aes.BlockSize:], paddedConsultationPrivateKeyBytes)
+	cfb.CryptBlocks(encryptedChatPrivateKeyBytes[aes.BlockSize:], paddedChatPrivateKeyBytes)
 
-	return encryptedConsultationPrivateKeyBytes, iv, nil
+	return encryptedChatPrivateKeyBytes, iv, nil
 }
 
 func pad(src []byte) []byte {
