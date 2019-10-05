@@ -26,23 +26,24 @@ func NewNotificationClient() *NotificationClient {
 	}
 }
 
-type ConsultationMessageSentRequest struct {
-	SenderUserUID  string `json:"senderUserUID"`
-	ConsultationID string `json:"consultationID"`
-	MessageText    string `json:"messageText"`
+type ChatMessageSentRequest struct {
+	ChatID        string `json:"chatID"`
+	SenderUserUID string `json:"senderUserUID"`
+	MessageText   string `json:"messageText"`
 }
 
-func (client *NotificationClient) ConsultationMessageSent(senderUserUID string, consultationID string, messageText string) (*http.Response, error) {
-	req := ConsultationMessageSentRequest{
-		SenderUserUID:  senderUserUID,
-		ConsultationID: consultationID,
-		MessageText:    messageText,
+func (client *NotificationClient) ChatMessageSent(senderUserUID string, chatID string, messageText string) (*http.Response, error) {
+	req := ChatMessageSentRequest{
+		SenderUserUID: senderUserUID,
+		ChatID:        chatID,
+		MessageText:   messageText,
 	}
 
 	return client.Post("/notifications/consultation-message-sent", req)
 }
 
-type ConsultationSessionRequestedRequest struct {
+type ConsultationRequestedRequest struct {
+	Chat *firestore.DocumentRef `json:"chatRef"`
 	Consultation       *firestore.DocumentRef `json:"consultationRef"`
 	PatientUser        *firestore.DocumentRef `json:"patientUserRef"`
 	ConsultationType   string                 `json:"consultationType"`
@@ -50,7 +51,7 @@ type ConsultationSessionRequestedRequest struct {
 	RequestedEndTime   time.Time              `json:"requestedEndTime"`
 }
 
-func (client *NotificationClient) ConsultationSessionRequested(req ConsultationSessionRequestedRequest) (*http.Response, error) {
+func (client *NotificationClient) ConsultationRequested(req ConsultationRequestedRequest) (*http.Response, error) {
 	return client.Post("/notifications/consultation-requested", req)
 }
 

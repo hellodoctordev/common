@@ -59,17 +59,18 @@ func (client *MessagingClient) SendAutomatedChatMessage(chatID, message, content
 	return client.Post(fmt.Sprintf("/messaging/internal/chats/%s", chatID), req)
 }
 
-func (client *MessagingClient) SendConsultationMessage(senderId string, consultationID string, message string, contentType string, messageType string) (*http.Response, error) {
-	type sendConsultationMessageRequest struct {
-		SenderID       string `json:"senderID"`
-		ConsultationID string `json:"consultationID"`
-		Message        string `json:"message"`
-		ContentType    string `json:"contentType"`
-		MessageType    string `json:"messageType"`
-	}
+type SendChatMessageRequest struct {
+	ChatID         string `json:"chatID"`
+	ConsultationID string `json:"consultationID"`
+	SenderID       string `json:"senderID"`
+	Message        string `json:"message"`
+	ContentType    string `json:"contentType"`
+	MessageType    string `json:"messageType"`
+}
 
-	req := sendConsultationMessageRequest{
-		SenderID:       senderId,
+func (client *MessagingClient) SendChatMessage(chatID, consultationID, senderID, message, contentType, messageType string) (*http.Response, error) {
+	req := SendChatMessageRequest{
+		SenderID:       senderID,
 		ConsultationID: consultationID,
 		Message:        message,
 		ContentType:    contentType,
