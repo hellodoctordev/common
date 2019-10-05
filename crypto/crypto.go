@@ -34,8 +34,8 @@ type ChatPublicKeyData struct {
 
 type ChatParticipantPrivateKeyData struct {
 	ParticipantUID             string `firestore:"participantUID"`
-	ChatID                     string `firestore:"consultationID"`
-	ChatPublicKey              string `firestore:"consultationPublicKey"`
+	ChatID                     string `firestore:"chatID"`
+	ChatPublicKey              string `firestore:"chatPublicKey"`
 	EncodedEncryptedPrivateKey string `firestore:"encodedEncryptedPrivateKey"`
 	EncodedEncryptedAESKey     string `firestore:"encodedEncryptedAESKey"`
 	EncodedAESIV               string `firestore:"encodedAESIV"`
@@ -72,13 +72,13 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 
 	_, _, err = firestoreClient.Collection("publicKeys").Add(ctx, chatPublicKeyData)
 	if err != nil {
-		logging.Error("error storing public chatKey for consultation %s: %s", chatID, err)
+		logging.Error("error storing public chatKey for chat %s: %s", chatID, err)
 		return
 	}
 
 	chatPrivateKeyBytes, err := x509.MarshalPKCS8PrivateKey(chatKey)
 	if err != nil {
-		logging.Error("error marshaling consultation %s private key: %s", chatID, err)
+		logging.Error("error marshaling chat %s private key: %s", chatID, err)
 		return
 	}
 
@@ -102,7 +102,7 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 
 		encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantPublicKey, chatAESKey)
 		if err2 != nil {
-			logging.Warn("error occurred encrypting consultation %s private key for participant %s: %s", chatID, participantRef.ID, err2)
+			logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
 			continue
 		}
 
