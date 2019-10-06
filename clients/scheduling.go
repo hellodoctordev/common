@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"cloud.google.com/go/firestore"
 	"github.com/hellodoctordev/common/utils"
 	"net/http"
 	"os"
@@ -37,9 +38,8 @@ type CreateNewEventRequest struct {
 	Description  string    `json:"description"`
 }
 
-
 type CreateNewEventResponse struct {
-	EventID string `json:"eventID"`
+	Event *firestore.DocumentRef `json:"eventRef"`
 }
 
 func (client *SchedulingClient) CreateNewEvent(req CreateNewEventRequest) (res CreateNewEventResponse, err error) {
