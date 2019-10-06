@@ -28,14 +28,14 @@ func NewSchedulingClient() *SchedulingClient {
 }
 
 type CreateNewEventRequest struct {
-	Title        string    `json:"title"`
-	Start        time.Time `json:"start"`
-	End          time.Time `json:"end"`
-	Availability string    `json:"availability"`
-	EventType    string    `json:"eventType"`
-	IsAllDay     bool      `json:"isAllDay"`
-	Participants []string  `json:"participants"`
-	Description  string    `json:"description"`
+	Title        string                   `json:"title"`
+	Start        time.Time                `json:"start"`
+	End          time.Time                `json:"end"`
+	Availability string                   `json:"availability"`
+	EventType    string                   `json:"eventType"`
+	IsAllDay     bool                     `json:"isAllDay"`
+	Participants []*firestore.DocumentRef `json:"participants"`
+	Description  string                   `json:"description"`
 }
 
 type CreateNewEventResponse struct {
