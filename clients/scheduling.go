@@ -11,14 +11,14 @@ type SchedulingClient struct {
 	HttpServiceClient
 }
 
-func NewSchedulingClient() *MessagingClient {
+func NewSchedulingClient() *SchedulingClient {
 	serviceHost := os.Getenv("BASE_SERVICE_URL")
 
 	if len(serviceHost) == 0 {
 		serviceHost = DefaultServiceHost
 	}
 
-	return &MessagingClient{
+	return &SchedulingClient{
 		HttpServiceClient{
 			Client:      http.DefaultClient,
 			ServiceHost: serviceHost,
