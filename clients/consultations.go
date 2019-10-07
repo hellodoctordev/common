@@ -36,11 +36,11 @@ type CreateConsultationRequest struct {
 	RequestedEnd       time.Time `json:"requestedEnd"`
 }
 
-type CreateChatConsultationResponse struct {
+type CreateConsultationResponse struct {
 	Chat         *firestore.DocumentRef `json:"chatRef"`
 	Consultation *firestore.DocumentRef `json:"consultationRef"`
 }
 
-func (client *ConsultationsClient) CreateChat(req CreateConsultationRequest) (*http.Response, error) {
+func (client *ConsultationsClient) CreateConsultation(req CreateConsultationRequest) (*http.Response, error) {
 	return client.Post("/consultations/internal/consultations", req)
 }
