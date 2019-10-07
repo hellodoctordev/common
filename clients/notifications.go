@@ -58,14 +58,14 @@ func (client *NotificationClient) ConsultationRequested(req ConsultationRequeste
 type VideoConsultationStartedRequest struct {
 	InitiatedByUserUID string `json:"initiatedByUserUID"`
 	ConsultationID     string `json:"consultationID"`
-	RoomSID            string `json:"roomSID"`
+	RoomName           string `json:"RoomName"`
 }
 
-func (client *NotificationClient) VideoConsultationStarted(initiatedByUserUID string, consultationID string, roomSID string) (*http.Response, error) {
+func (client *NotificationClient) VideoConsultationStarted(initiatedByUserUID string, consultationID string, roomName string) (*http.Response, error) {
 	req := VideoConsultationStartedRequest{
 		InitiatedByUserUID: initiatedByUserUID,
 		ConsultationID:     consultationID,
-		RoomSID:            roomSID,
+		RoomName:           roomName,
 	}
 
 	return client.Post("/notifications/video-consultation-started", req)
