@@ -70,3 +70,17 @@ func (client *NotificationClient) VideoConsultationStarted(initiatedByUserUID st
 
 	return client.Post("/notifications/video-consultation-started", req)
 }
+
+type VoiceConsultationStartedRequest struct {
+	InitiatedByUserUID string `json:"initiatedByUserUID"`
+	ConsultationID     string `json:"consultationID"`
+}
+
+func (client *NotificationClient) VoiceConsultationStarted(initiatedByUserUID string, consultationID string) (*http.Response, error) {
+	req := VoiceConsultationStartedRequest{
+		InitiatedByUserUID: initiatedByUserUID,
+		ConsultationID:     consultationID,
+	}
+
+	return client.Post("/notifications/voice-consultation-started", req)
+}
