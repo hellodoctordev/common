@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"github.com/hellodoctordev/common/firebase"
 	"github.com/hellodoctordev/common/keys"
+	"github.com/hellodoctordev/common/logging"
 	"golang.org/x/oauth2"
+	"google.golang.org/api/iterator"
 	"log"
 	"net/http"
 )
@@ -95,18 +97,20 @@ func GetGoogleUserOAuthClient(userID string) (client *http.Client, err error) {
 		Documents(ctx).
 		Next()
 
-	if err != nil {
+	if err == iterator.Done {
 		// no stored token was found
 
-		log.Printf("error getting user oauth: %s", err)
-		return
+		return nil, nil
 
+	} else if err != nil {
+		logging.Warn("an error occurred getting user %s oauth: %s", userID, err)
+		return
 	} else {
 		// stored token was found
 
 		err2 := userOAuth.DataTo(&oauthToken)
 		if err2 != nil {
-			log.Printf("error parsing user oauth: %s", err)
+			logging.Warn("error parsing user oauth: %s", err)
 			return
 		}
 	}
