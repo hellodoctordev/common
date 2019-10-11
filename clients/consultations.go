@@ -2,6 +2,7 @@ package clients
 
 import (
 	"cloud.google.com/go/firestore"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -17,6 +18,8 @@ func NewConsultationsClient() *ConsultationsClient {
 	if len(serviceHost) == 0 {
 		serviceHost = DefaultServiceHost
 	}
+
+	log.Printf("service host: %s", serviceHost)
 
 	return &ConsultationsClient{
 		HttpServiceClient{
