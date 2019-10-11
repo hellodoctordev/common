@@ -44,3 +44,17 @@ type CreateConsultationResponse struct {
 func (client *ConsultationsClient) CreateConsultation(req CreateConsultationRequest) (*http.Response, error) {
 	return client.Post("/consultations/internal/consultations", req)
 }
+
+type BeginConsultationRequest struct {
+	Provider         *firestore.DocumentRef `json:"providerRef"`
+	Consultation *firestore.DocumentRef `json:"consultationRef"`
+}
+
+type BeginConsultationResponse struct {
+	Chat         *firestore.DocumentRef `json:"chatRef"`
+	Consultation *firestore.DocumentRef `json:"consultationRef"`
+}
+
+func (client *ConsultationsClient) BeginConsultation(req BeginConsultationRequest) (*http.Response, error) {
+	return client.Post("/consultations/internal/consultations", req)
+}
