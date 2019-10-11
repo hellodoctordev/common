@@ -56,5 +56,5 @@ type StartConsultationResponse struct {
 }
 
 func (client *ConsultationsClient) StartConsultation(req StartConsultationRequest) (*http.Response, error) {
-	return client.Post("/consultations/internal/consultations", req)
+	return client.Post("/consultations/internal/consultations/start", req)
 }
