@@ -32,6 +32,6 @@ func WriteJSONResponse(w http.ResponseWriter, response interface{}) {
 		return
 	}
 
-	w.Header().Set("Content-ConsultationType", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write(js)
 }
