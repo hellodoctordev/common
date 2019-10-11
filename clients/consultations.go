@@ -32,8 +32,8 @@ type CreateConsultationRequest struct {
 	ConsultationType   string    `json:"consultationType"`   // see consultations.types for enum values
 	ConsultationStatus string    `json:"consultationStatus"` // see consultations.types for enum values
 	RequestMode        string    `json:"requestMode"`        // see scheduling.types for enum values
-	RequestedStart     time.Time `json:"requestedStart"`
-	RequestedEnd       time.Time `json:"requestedEnd"`
+	RequestedStart     *time.Time `json:"requestedStart"`
+	RequestedEnd       *time.Time `json:"requestedEnd"`
 }
 
 type CreateConsultationResponse struct {
