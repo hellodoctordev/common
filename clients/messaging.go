@@ -73,5 +73,5 @@ func (client *MessagingClient) SendChatMessage(chatID, consultationID, senderID,
 		ContentType:    contentType,
 	}
 
-	return client.Post("/messages/send", req)
+	return client.Post(fmt.Sprintf("/messaging/chats/%s/messages", chatID), req)
 }
