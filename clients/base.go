@@ -20,7 +20,7 @@ type HttpServiceClient struct {
 
 func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Response, err error) {
 	url := fmt.Sprintf("%s%s", client.ServiceHost, path)
-	log.Printf("url: %s", url)
+
 	reqBody, err := json.Marshal(body)
 	if err != nil {
 		log.Printf("error occurred marshalling interface: %s", err)
@@ -35,6 +35,6 @@ func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Respon
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Internal-Authorization", keys.InternalServiceKeys.ServiceToken)
-	log.Printf("doing req")
+
 	return client.Do(req)
 }
