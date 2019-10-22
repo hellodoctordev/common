@@ -86,3 +86,12 @@ func (client *NotificationClient) VoiceConsultationStarted(initiatedByUserUID st
 
 	return client.Post("/notifications/voice-consultation-started", req)
 }
+
+type VoiceCallStatusRequest struct {
+	ConsultationID string `json:"consultationID"`
+	CallStatus     string `json:"callStatus"`
+}
+
+func (client *NotificationClient) VoiceCallStatus(req VoiceCallStatusRequest) (*http.Response, error) {
+	return client.Post("/notifications/voice-call-status", req)
+}
