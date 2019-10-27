@@ -2,10 +2,10 @@ package crypto
 
 import "crypto/rsa"
 
-type UserPublicKeyData struct {
+type UserDevicePublicKeyData struct {
 	UserUID     string `firestore:"userUID"`
-	PublicKey   string `firestore:"publicKey"`
 	DeviceToken string `firestore:"deviceToken"`
+	PublicKey   string `firestore:"publicKey"`
 }
 
 type ChatPublicKeyData struct {
