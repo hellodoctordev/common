@@ -40,7 +40,6 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 	}
 
 	var chatPublicKey strings.Builder
-
 	err = pem.Encode(&chatPublicKey, &publicPem)
 	if err != nil {
 		logging.Error("error creating chat public key string: %s", err)
@@ -109,28 +108,28 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 }
 
 func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKeys []DevicePublicKey, err error) {
-	participantPublicKeySnapshots := firestoreClient.Collection("publicKeys").
-		Where("userUID", "==", participantUID).
+	participantDeviceSnapshots := firestoreClient.Collection("users").
+		Doc(participantUID).
+		Collection("devices").
 		Documents(context.Background())
 
 	for {
-		participantPublicKeySnapshot, err2 := participantPublicKeySnapshots.Next()
+		participantDeviceSnapshot, err2 := participantDeviceSnapshots.Next()
 		if err2 == iterator.Done {
 			return
 		} else if err2 != nil {
-			logging.Warn("error occurred getting participant %s public chatKey: %s", participantUID, err2)
+			logging.Warn("error occurred getting participant %s device: %s", participantUID, err2)
 			continue
 		}
 
-		var participantPublicKeyData UserPublicKeyData
-
-		err2 = participantPublicKeySnapshot.DataTo(&participantPublicKeyData)
+		var participantDevicePublicKeyData UserDevicePublicKeyData
+		err2 = participantDeviceSnapshot.DataTo(&participantDevicePublicKeyData)
 		if err2 != nil {
 			logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err2)
 			continue
 		}
 
-		block, _ := pem.Decode([]byte(participantPublicKeyData.PublicKey))
+		block, _ := pem.Decode([]byte(participantDevicePublicKeyData.PublicKey))
 
 		var participantDevicePublicKey rsa.PublicKey
 		_, err2 = asn1.Unmarshal(block.Bytes, &participantDevicePublicKey)
@@ -140,7 +139,7 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 		}
 
 		devicePublicKey := DevicePublicKey{
-			DeviceToken: participantPublicKeyData.DeviceToken,
+			DeviceToken: participantDevicePublicKeyData.DeviceToken,
 			PublicKey:   participantDevicePublicKey,
 		}
 
