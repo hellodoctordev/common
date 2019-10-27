@@ -129,6 +129,10 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 			continue
 		}
 
+		if !participantDeviceData.IsMasterDevice && participantDeviceData.AuthorizedBy == nil {
+			continue
+		}
+
 		block, _ := pem.Decode([]byte(participantDeviceData.PublicKey))
 
 		var participantDevicePublicKey rsa.PublicKey
