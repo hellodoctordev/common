@@ -122,14 +122,14 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 			continue
 		}
 
-		var participantDevicePublicKeyData UserDevicePublicKeyData
-		err2 = participantDeviceSnapshot.DataTo(&participantDevicePublicKeyData)
+		var participantDeviceData UserDeviceData
+		err2 = participantDeviceSnapshot.DataTo(&participantDeviceData)
 		if err2 != nil {
 			logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err2)
 			continue
 		}
 
-		block, _ := pem.Decode([]byte(participantDevicePublicKeyData.PublicKey))
+		block, _ := pem.Decode([]byte(participantDeviceData.PublicKey))
 
 		var participantDevicePublicKey rsa.PublicKey
 		_, err2 = asn1.Unmarshal(block.Bytes, &participantDevicePublicKey)
@@ -139,7 +139,7 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 		}
 
 		devicePublicKey := DevicePublicKey{
-			DeviceToken: participantDevicePublicKeyData.DeviceToken,
+			DeviceToken: participantDeviceData.DeviceToken,
 			PublicKey:   participantDevicePublicKey,
 		}
 
