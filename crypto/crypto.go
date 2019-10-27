@@ -14,6 +14,7 @@ import (
 	"encoding/pem"
 	"github.com/hellodoctordev/common/firebase"
 	"github.com/hellodoctordev/common/logging"
+	"google.golang.org/api/iterator"
 	"io"
 	"strings"
 )
@@ -21,25 +22,6 @@ import (
 var firestoreClient = firebase.NewFirestoreClient()
 
 const keyBitSize = 2048
-
-type UserPublicKeyData struct {
-	UserUID   string `firestore:"userUID"`
-	PublicKey string `firestore:"publicKey"`
-}
-
-type ChatPublicKeyData struct {
-	ChatID    string `firestore:"chatID"`
-	PublicKey string `firestore:"publicKey"`
-}
-
-type ChatParticipantPrivateKeyData struct {
-	ParticipantUID             string `firestore:"participantUID"`
-	ChatID                     string `firestore:"chatID"`
-	ChatPublicKey              string `firestore:"chatPublicKey"`
-	EncodedEncryptedPrivateKey string `firestore:"encodedEncryptedPrivateKey"`
-	EncodedEncryptedAESKey     string `firestore:"encodedEncryptedAESKey"`
-	EncodedAESIV               string `firestore:"encodedAESIV"`
-}
 
 func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 	ctx := context.Background()
@@ -95,62 +77,75 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 	}
 
 	for _, participantRef := range participantRefs {
-		participantPublicKey, err2 := getParticipantPublicKey(participantRef.ID)
+		participantPublicKeys, err2 := getParticipantDevicesPublicKeys(participantRef.ID)
 		if err2 != nil {
 			continue
 		}
 
-		encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantPublicKey, chatAESKey)
-		if err2 != nil {
-			logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
-			continue
-		}
+		for _, participantDevicePublicKey := range participantPublicKeys {
+			encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantDevicePublicKey.PublicKey, chatAESKey)
+			if err2 != nil {
+				logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
+				continue
+			}
 
-		chatParticipantPrivateKey := ChatParticipantPrivateKeyData{
-			ParticipantUID:             participantRef.ID,
-			ChatID:                     chatID,
-			ChatPublicKey:              chatPublicKey.String(),
-			EncodedEncryptedPrivateKey: hex.EncodeToString(encryptedChatPrivateKey),
-			EncodedEncryptedAESKey:     hex.EncodeToString(encryptedChatAESKeyBytes),
-			EncodedAESIV:               hex.EncodeToString(aesIV),
-		}
+			chatParticipantPrivateKey := ChatParticipantPrivateKeyData{
+				ParticipantUID:             participantRef.ID,
+				DeviceToken:                participantDevicePublicKey.DeviceToken,
+				ChatID:                     chatID,
+				ChatPublicKey:              chatPublicKey.String(),
+				EncodedEncryptedPrivateKey: hex.EncodeToString(encryptedChatPrivateKey),
+				EncodedEncryptedAESKey:     hex.EncodeToString(encryptedChatAESKeyBytes),
+				EncodedAESIV:               hex.EncodeToString(aesIV),
+			}
 
-		_, _, err2 = firestoreClient.Collection("encryptedPrivateKeys").Add(ctx, chatParticipantPrivateKey)
-		if err2 != nil {
-			logging.Warn("error occurred storing chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
-			continue
+			_, _, err2 = firestoreClient.Collection("encryptedPrivateKeys").Add(ctx, chatParticipantPrivateKey)
+			if err2 != nil {
+				logging.Warn("error occurred storing chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
+				continue
+			}
 		}
 	}
 }
 
-func getParticipantPublicKey(participantUID string) (participantPublicKey rsa.PublicKey, err error) {
-	participantPublicKeySnapshot, err := firestoreClient.Collection("publicKeys").
+func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKeys []DevicePublicKey, err error) {
+	participantPublicKeySnapshots := firestoreClient.Collection("publicKeys").
 		Where("userUID", "==", participantUID).
-		Documents(context.Background()).
-		Next()
+		Documents(context.Background())
 
-	if err != nil {
-		logging.Warn("error occurred getting participant %s public chatKey: %s", participantUID, err)
-		return
+	for {
+		participantPublicKeySnapshot, err := participantPublicKeySnapshots.Next()
+		if err == iterator.Done {
+			return
+		} else if err != nil {
+			logging.Warn("error occurred getting participant %s public chatKey: %s", participantUID, err)
+			continue
+		}
+
+		var participantPublicKeyData UserPublicKeyData
+
+		err = participantPublicKeySnapshot.DataTo(&participantPublicKeyData)
+		if err != nil {
+			logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err)
+			continue
+		}
+
+		block, _ := pem.Decode([]byte(participantPublicKeyData.PublicKey))
+
+		var participantDevicePublicKey rsa.PublicKey
+		_, err = asn1.Unmarshal(block.Bytes, &participantDevicePublicKey)
+		if err != nil {
+			logging.Warn("error occurred parsing participant %s public key: %s", participantUID, err)
+			continue
+		}
+
+		devicePublicKey := DevicePublicKey{
+			DeviceToken: participantPublicKeyData.DeviceToken,
+			PublicKey:   participantDevicePublicKey,
+		}
+
+		participantPublicKeys = append(participantPublicKeys, devicePublicKey)
 	}
-
-	var participantPublicKeyData UserPublicKeyData
-
-	err = participantPublicKeySnapshot.DataTo(&participantPublicKeyData)
-	if err != nil {
-		logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err)
-		return
-	}
-
-	block, _ := pem.Decode([]byte(participantPublicKeyData.PublicKey))
-
-	_, err = asn1.Unmarshal(block.Bytes, &participantPublicKey)
-	if err != nil {
-		logging.Warn("error occurred parsing participant %s public key: %s", participantUID, err)
-		return
-	}
-
-	return
 }
 
 func generateNewAESKey() ([]byte, error) {
