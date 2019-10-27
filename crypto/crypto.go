@@ -114,28 +114,28 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 		Documents(context.Background())
 
 	for {
-		participantPublicKeySnapshot, err := participantPublicKeySnapshots.Next()
-		if err == iterator.Done {
+		participantPublicKeySnapshot, err2 := participantPublicKeySnapshots.Next()
+		if err2 == iterator.Done {
 			return
-		} else if err != nil {
-			logging.Warn("error occurred getting participant %s public chatKey: %s", participantUID, err)
+		} else if err2 != nil {
+			logging.Warn("error occurred getting participant %s public chatKey: %s", participantUID, err2)
 			continue
 		}
 
 		var participantPublicKeyData UserPublicKeyData
 
-		err = participantPublicKeySnapshot.DataTo(&participantPublicKeyData)
-		if err != nil {
-			logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err)
+		err2 = participantPublicKeySnapshot.DataTo(&participantPublicKeyData)
+		if err2 != nil {
+			logging.Warn("error occurred getting participant %s public chatKey data: %s", participantUID, err2)
 			continue
 		}
 
 		block, _ := pem.Decode([]byte(participantPublicKeyData.PublicKey))
 
 		var participantDevicePublicKey rsa.PublicKey
-		_, err = asn1.Unmarshal(block.Bytes, &participantDevicePublicKey)
-		if err != nil {
-			logging.Warn("error occurred parsing participant %s public key: %s", participantUID, err)
+		_, err2 = asn1.Unmarshal(block.Bytes, &participantDevicePublicKey)
+		if err2 != nil {
+			logging.Warn("error occurred parsing participant %s public key: %s", participantUID, err2)
 			continue
 		}
 
