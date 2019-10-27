@@ -1,10 +1,15 @@
 package crypto
 
-import "crypto/rsa"
+import (
+	"cloud.google.com/go/firestore"
+	"crypto/rsa"
+)
 
 type UserDeviceData struct {
-	DeviceToken string `firestore:"token"`
-	PublicKey   string `firestore:"publicKey"`
+	DeviceToken    string                 `firestore:"token"`
+	PublicKey      string                 `firestore:"publicKey"`
+	IsMasterDevice bool                   `firestore:"isMasterDevice,omitempty"`
+	AuthorizedBy   *firestore.DocumentRef `firestore:"authorizedBy,omitempty"`
 }
 
 type ChatPublicKeyData struct {
