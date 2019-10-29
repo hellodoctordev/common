@@ -39,12 +39,12 @@ func (client *NotificationClient) ChatMessageSent(req ChatMessageSentRequest) (*
 }
 
 type ConsultationRequestedRequest struct {
-	Chat               *firestore.DocumentRef `json:"chatRef"`
-	Consultation       *firestore.DocumentRef `json:"consultationRef"`
-	PatientUser        *firestore.DocumentRef `json:"patientUserRef"`
-	ConsultationType   string                 `json:"consultationType"`
-	RequestedStartTime time.Time              `json:"requestedStartTime"`
-	RequestedEndTime   time.Time              `json:"requestedEndTime"`
+	Chat             *firestore.DocumentRef `json:"chatRef"`
+	Consultation     *firestore.DocumentRef `json:"consultationRef"`
+	PatientUser      *firestore.DocumentRef `json:"patientUserRef"`
+	ConsultationType string                 `json:"consultationType"`
+	RequestedStart   time.Time              `json:"requestedStart"`
+	RequestedEnd     time.Time              `json:"requestedEnd"`
 }
 
 func (client *NotificationClient) ConsultationRequested(req ConsultationRequestedRequest) (*http.Response, error) {
