@@ -30,11 +30,11 @@ func NewConsultationsClient() *ConsultationsClient {
 }
 
 type CreateConsultationRequest struct {
-	PatientUserUID     string    `json:"patientUserUID"`
-	ProviderUserUID    string    `json:"providerUserUID"`
-	ConsultationType   string    `json:"consultationType"`   // see consultations.types for enum values
-	ConsultationStatus string    `json:"consultationStatus"` // see consultations.types for enum values
-	RequestMode        string    `json:"requestMode"`        // see scheduling.types for enum values
+	PatientUserUID     string     `json:"patientUserUID"`
+	ProviderUserUID    string     `json:"providerUserUID"`
+	ConsultationType   string     `json:"consultationType"`   // see consultations.types for enum values
+	ConsultationStatus string     `json:"consultationStatus"` // see consultations.types for enum values
+	RequestMode        string     `json:"requestMode"`        // see scheduling.types for enum values
 	RequestedStart     *time.Time `json:"requestedStart"`
 	RequestedEnd       *time.Time `json:"requestedEnd"`
 }
@@ -48,16 +48,16 @@ func (client *ConsultationsClient) CreateConsultation(req CreateConsultationRequ
 	return client.Post("/consultations/internal/consultations", req)
 }
 
-type StartConsultationRequest struct {
-	Provider         *firestore.DocumentRef `json:"providerRef"`
+type StartChatConsultationRequest struct {
+	Provider     *firestore.DocumentRef `json:"providerRef"`
 	Consultation *firestore.DocumentRef `json:"consultationRef"`
 }
 
-type StartConsultationResponse struct {
+type StartChatConsultationResponse struct {
 	Chat         *firestore.DocumentRef `json:"chatRef"`
 	Consultation *firestore.DocumentRef `json:"consultationRef"`
 }
 
-func (client *ConsultationsClient) StartConsultation(req StartConsultationRequest) (*http.Response, error) {
-	return client.Post("/consultations/internal/consultations/start", req)
+func (client *ConsultationsClient) StartChatConsultation(req StartChatConsultationRequest) (*http.Response, error) {
+	return client.Post("/consultations/internal/consultations/start-chat", req)
 }
