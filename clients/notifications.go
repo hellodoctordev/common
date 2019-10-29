@@ -27,20 +27,14 @@ func NewNotificationClient() *NotificationClient {
 }
 
 type ChatMessageSentRequest struct {
-	ChatID               string `json:"chatID"`
-	ConsultationID       string `json:"consultationID"`
-	SenderUserUID        string `json:"senderUserUID"`
-	EncryptedMessageText string `json:"encryptedMessageText"`
+	ChatID             string `json:"chatID"`
+	ConsultationID     string `json:"consultationID"`
+	SenderUserUID      string `json:"senderUserUID"`
+	MessageContent     string `json:"messageContent"`
+	MessageContentType string `json:"messageContentType"`
 }
 
-func (client *NotificationClient) ChatMessageSent(chatID, consultationID, senderUserUID, encryptedMessageText string) (*http.Response, error) {
-	req := ChatMessageSentRequest{
-		SenderUserUID:        senderUserUID,
-		ChatID:               chatID,
-		ConsultationID:       consultationID,
-		EncryptedMessageText: encryptedMessageText,
-	}
-
+func (client *NotificationClient) ChatMessageSent(req ChatMessageSentRequest) (*http.Response, error) {
 	return client.Post("/notifications/chat-message-sent", req)
 }
 
