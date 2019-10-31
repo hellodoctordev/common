@@ -89,3 +89,11 @@ type VoiceCallStatusRequest struct {
 func (client *NotificationClient) VoiceCallStatus(req VoiceCallStatusRequest) (*http.Response, error) {
 	return client.Post("/notifications/voice-call-status", req)
 }
+
+type RequestConsultationFollowupRequest struct {
+	ConsultationID string `json:"consultationID"`
+}
+
+func (client *NotificationClient) RequestConsultationFollowup(req RequestConsultationFollowupRequest) (*http.Response, error) {
+	return client.Post("/notifications/request-consultation-followup", req)
+}
