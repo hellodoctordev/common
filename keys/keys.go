@@ -4,6 +4,7 @@ var TwilioKeys = initTwilioKeys()
 var InternalServiceKeys = initInternalServiceKeys()
 var AdminKeys = initAdminKeys()
 var GoogleOAuthKeys = initGoogleAuthKeys()
+var GoogleApiKeys = initGoogleApiKeys()
 
 func initTwilioKeys() TwilioKey {
 	var keys TwilioKey
@@ -28,6 +29,13 @@ func initAdminKeys() AdminKey {
 
 func initGoogleAuthKeys() GoogleOAuthKey {
 	var keys GoogleOAuthKey
+	Load(&keys, "stage")
+
+	return keys
+}
+
+func initGoogleApiKeys() GoogleApiKey {
+	var keys GoogleApiKey
 	Load(&keys, "stage")
 
 	return keys
