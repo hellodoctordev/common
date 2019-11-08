@@ -2,6 +2,7 @@ package logging
 
 import (
 	"fmt"
+	"log"
 )
 
 type LogLevel int
@@ -36,5 +37,5 @@ func Error(format string, v... interface{}) {
 func printLog(level LogLevel, format string, v... interface{}) {
 	message := fmt.Sprintf(format, v...)
 
-	fmt.Printf("[%s] %s", level.String(), message)
+	log.Printf("[%s] %s", level.String(), message)
 }
