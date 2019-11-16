@@ -37,6 +37,7 @@ type InternalCreateNewEventRequest struct {
 	IsAllDay     bool                     `json:"isAllDay"`
 	Participants []*firestore.DocumentRef `json:"participants"`
 	Description  string                   `json:"description"`
+	Consultation *firestore.DocumentRef   `json:"consultationRef"`
 }
 
 type InternalCreateNewEventResponse struct {
