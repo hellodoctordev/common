@@ -55,6 +55,7 @@ func (client *SchedulingClient) InternalCreateNewEvent(req InternalCreateNewEven
 }
 
 type InternalUpdateEventRequest struct {
+	UserUID string    `json:"userUID"`
 	EventID string    `json:"eventID"`
 	Start   time.Time `json:"start"`
 	End     time.Time `json:"end"`
