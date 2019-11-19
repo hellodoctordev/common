@@ -19,6 +19,14 @@ type HttpServiceClient struct {
 }
 
 func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Response, err error) {
+	return client.doRequest("POST", path, body)
+}
+
+func (client *HttpServiceClient) Put(path, body interface{}) (resp *http.Response, err error) {
+	return client.doRequest("PUT", path, body)
+}
+
+func (client *HttpServiceClient) doRequest(method string, path, body interface{}) (resp *http.Response, err error) {
 	url := fmt.Sprintf("%s%s", client.ServiceHost, path)
 
 	reqBody, err := json.Marshal(body)
@@ -27,7 +35,7 @@ func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Respon
 		return
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		log.Printf("error occurred creating new request: %s", err)
 		return

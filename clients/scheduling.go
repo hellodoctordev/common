@@ -52,3 +52,21 @@ func (client *SchedulingClient) InternalCreateNewEvent(req InternalCreateNewEven
 
 	return
 }
+
+type InternalUpdateEventRequest struct {
+	Start        time.Time                `json:"start"`
+	End          time.Time                `json:"end"`
+}
+
+type InternalUpdateEventResponse struct {
+	Event *firestore.DocumentRef `json:"eventRef"`
+}
+
+func (client *SchedulingClient) InternalUpdateEvent(req InternalCreateNewEventRequest) (res InternalCreateNewEventResponse, err error) {
+	r, err := client.Put("/scheduling/internal/events", req)
+	if err == nil {
+		err = utils.ReadBody(r.Body, &res)
+	}
+
+	return
+}
