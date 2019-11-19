@@ -29,16 +29,17 @@ func NewSchedulingClient() *SchedulingClient {
 }
 
 type InternalCreateNewEventRequest struct {
-	UserUID      string                   `json:"userUID"`
-	Title        string                   `json:"title"`
-	Start        time.Time                `json:"start"`
-	End          time.Time                `json:"end,omitempty"`
-	Availability string                   `json:"availability"`
-	EventType    string                   `json:"eventType"`
-	IsAllDay     bool                     `json:"isAllDay"`
-	Participants []*firestore.DocumentRef `json:"participants"`
-	Description  string                   `json:"description"`
-	Consultation *firestore.DocumentRef   `json:"consultationRef"`
+	UserUID          string                   `json:"userUID"`
+	Title            string                   `json:"title"`
+	Start            time.Time                `json:"start"`
+	End              time.Time                `json:"end,omitempty"`
+	Availability     string                   `json:"availability"`
+	EventType        string                   `json:"eventType"`
+	IsAllDay         bool                     `json:"isAllDay"`
+	Participants     []*firestore.DocumentRef `json:"participants"`
+	Description      string                   `json:"description"`
+	Consultation     *firestore.DocumentRef   `json:"consultationRef"`
+	ConsultationType string                   `json:"consultationType"`
 }
 
 type InternalCreateNewEventResponse struct {
