@@ -65,7 +65,7 @@ type InternalUpdateEventResponse struct {
 }
 
 func (client *SchedulingClient) InternalUpdateEvent(req InternalUpdateEventRequest) (res InternalCreateNewEventResponse, err error) {
-	r, err := client.Put(fmt.sprintf("/scheduling/internal/events/%s", req.EventID), req)
+	r, err := client.Put(fmt.Sprintf("/scheduling/internal/events/%s", req.EventID), req)
 	if err == nil {
 		err = utils.ReadBody(r.Body, &res)
 	}
