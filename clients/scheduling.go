@@ -2,6 +2,7 @@ package clients
 
 import (
 	"cloud.google.com/go/firestore"
+	"fmt"
 	"github.com/hellodoctordev/common/utils"
 	"net/http"
 	"os"
@@ -54,16 +55,17 @@ func (client *SchedulingClient) InternalCreateNewEvent(req InternalCreateNewEven
 }
 
 type InternalUpdateEventRequest struct {
-	Start        time.Time                `json:"start"`
-	End          time.Time                `json:"end"`
+	EventID string    `json:"eventID"`
+	Start   time.Time `json:"start"`
+	End     time.Time `json:"end"`
 }
 
 type InternalUpdateEventResponse struct {
 	Event *firestore.DocumentRef `json:"eventRef"`
 }
 
-func (client *SchedulingClient) InternalUpdateEvent(req InternalCreateNewEventRequest) (res InternalCreateNewEventResponse, err error) {
-	r, err := client.Put("/scheduling/internal/events", req)
+func (client *SchedulingClient) InternalUpdateEvent(req InternalUpdateEventRequest) (res InternalCreateNewEventResponse, err error) {
+	r, err := client.Put(fmt.sprintf("/scheduling/internal/events/%s", req.EventID), req)
 	if err == nil {
 		err = utils.ReadBody(r.Body, &res)
 	}
