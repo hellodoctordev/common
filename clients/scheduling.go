@@ -74,3 +74,14 @@ func (client *SchedulingClient) InternalUpdateEvent(req InternalUpdateEventReque
 
 	return
 }
+
+type InternalDeleteEventRequest struct {
+	UserUID string     `json:"userUID"`
+	EventID string     `json:"eventID"`
+}
+
+func (client *SchedulingClient) InternalDeleteEvent(req InternalUpdateEventRequest) error {
+	_, err := client.Delete(fmt.Sprintf("/scheduling/internal/events/%s", req.EventID), req)
+
+	return err
+}
