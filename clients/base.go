@@ -26,6 +26,10 @@ func (client *HttpServiceClient) Put(path, body interface{}) (resp *http.Respons
 	return client.doRequest("PUT", path, body)
 }
 
+func (client *HttpServiceClient) Delete(path, body interface{}) (resp *http.Response, err error) {
+	return client.doRequest("DELETE", path, body)
+}
+
 func (client *HttpServiceClient) doRequest(method string, path, body interface{}) (resp *http.Response, err error) {
 	url := fmt.Sprintf("%s%s", client.ServiceHost, path)
 
