@@ -56,10 +56,11 @@ func (client *SchedulingClient) InternalCreateNewEvent(req InternalCreateNewEven
 }
 
 type InternalUpdateEventRequest struct {
-	UserUID string     `json:"userUID"`
-	EventID string     `json:"eventID"`
-	Start   *time.Time `json:"start"`
-	End     *time.Time `json:"end"`
+	UserUID      string     `json:"userUID"`
+	EventID      string     `json:"eventID"`
+	Start        *time.Time `json:"start"`
+	End          *time.Time `json:"end"`
+	Availability string     `json:"availability"`
 }
 
 type InternalUpdateEventResponse struct {
@@ -76,8 +77,8 @@ func (client *SchedulingClient) InternalUpdateEvent(req InternalUpdateEventReque
 }
 
 type InternalDeleteEventRequest struct {
-	UserUID string     `json:"userUID"`
-	EventID string     `json:"eventID"`
+	UserUID string `json:"userUID"`
+	EventID string `json:"eventID"`
 }
 
 func (client *SchedulingClient) InternalDeleteEvent(req InternalUpdateEventRequest) error {
