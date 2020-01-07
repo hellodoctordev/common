@@ -1,10 +1,13 @@
 package resources
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type Resource interface {
 	IsValid() bool
 	ToMap() map[string]interface{}
+	GetResourceType() string
 }
 
 type BaseResource struct {
