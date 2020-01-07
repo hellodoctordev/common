@@ -1,6 +1,6 @@
 package resources
 
-import "hellodoctor/emr/x/codes"
+import "github.com/hellodoctordev/common/emr/codes"
 
 type Organization struct {
 }
