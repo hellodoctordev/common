@@ -1,7 +1,7 @@
 package resources
 
 import (
-	"hellodoctor/emr/x/codes"
+	"github.com/hellodoctordev/common/emr/codes"
 	"time"
 )
 
