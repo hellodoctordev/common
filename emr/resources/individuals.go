@@ -19,7 +19,8 @@ type Person struct {
 	Link       []PersonLink               `json:"link"`
 }
 
-func (p Person) IsPersonLinkTarget() {}
+func (p Person) GetResourceType() string { return "Person" }
+func (p Person) IsPersonLinkTarget()     {}
 
 type Patient struct {
 	// http://hl7.org/implement/standards/fhir/STU3/patient.html
@@ -33,6 +34,8 @@ type Patient struct {
 	ManagingOrganization *Reference           `json:"managingOrganization"` // Reference Types: Organization
 	Link                 []PatientLink        `json:"link"`
 }
+
+func (p Patient) GetResourceType() string { return "Patient" }
 
 func (p Patient) IsValid() bool {
 	return p.DeceasedBoolean == false || p.DeceasedDateTime == nil
@@ -72,6 +75,7 @@ type Practitioner struct {
 	Communication []Communication `json:"communication"`
 }
 
+func (p Practitioner) GetResourceType() string { return "Practitioner" }
 func (p Practitioner) IsPersonLinkTarget()          {}
 func (p Practitioner) IsConditionAsserter()         {}
 func (p Practitioner) IsProcedurePerformer()        {}
