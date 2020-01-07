@@ -31,9 +31,9 @@ type HumanName struct {
 }
 
 type ContactPoint struct {
-	System *codes.ContactPointSystem `json:"system"`
+	System codes.ContactPointSystem `json:"system"`
 	Value  string                    `json:"value,omitempty"`
-	Use    *codes.ContactPointUse    `json:"use"`
+	Use    codes.ContactPointUse    `json:"use"`
 	Rank   int                       `json:"rank,omitempty"`
 }
 
