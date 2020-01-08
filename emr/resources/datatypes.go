@@ -32,9 +32,9 @@ type HumanName struct {
 
 type ContactPoint struct {
 	System codes.ContactPointSystem `json:"system"`
-	Value  string                    `json:"value,omitempty"`
+	Value  string                   `json:"value,omitempty"`
 	Use    codes.ContactPointUse    `json:"use"`
-	Rank   int                       `json:"rank,omitempty"`
+	Rank   int                      `json:"rank,omitempty"`
 }
 
 type Address struct {
@@ -82,9 +82,9 @@ type PatientLink struct {
 }
 
 type Qualification struct {
-	Identifier Identifier              `json:"identifier"`
-	Code       codes.QualificationCode `json:"code"`
-	Issuer     *Organization           `json:"issuer"` // Organization that regulates and issues the qualification
+	Identifier Identifier      `json:"identifier"`
+	Code       CodeableConcept `json:"code"`
+	Issuer     *Reference      `json:"issuer"` // Organization that regulates and issues the qualification
 }
 
 type PersonLinkTarget interface {

@@ -12,11 +12,11 @@ type Person struct {
 	Active     bool                       `json:"active,omitempty"`
 	Name       []HumanName                `json:"name,omitempty"`
 	Telecom    []ContactPoint             `json:"telecom,omitempty"`
-	Gender     codes.AdministrativeGender `json:"gender"`
-	BirthDate  *Date                      `json:"birthDate"`
-	Address    []Address                  `json:"address"`
-	Photo      []Attachment               `json:"photo"`
-	Link       []PersonLink               `json:"link"`
+	Gender     codes.AdministrativeGender `json:"gender,omitempty"`
+	BirthDate  *Date                      `json:"birthDate,omitempty"`
+	Address    []Address                  `json:"address,omitempty"`
+	Photo      []Attachment               `json:"photo,omitempty"`
+	Link       []PersonLink               `json:"link,omitempty"`
 }
 
 func (p Person) GetResourceType() string { return "Person" }
@@ -56,7 +56,7 @@ func (p Patient) IsCarePlanActivityPerformer() {}
 type RelatedPerson struct {
 	// http://hl7.org/implement/standards/fhir/STU3/relatedperson.html
 	Person
-	Relationship codes.PatientRelationshipType `json:"relationship"`
+	Relationship CodeableConcept `json:"relationship"`
 }
 
 func (rp RelatedPerson) IsPatientLinkOther()          {}
@@ -71,8 +71,8 @@ func (rp RelatedPerson) IsCarePlanActivityPerformer() {}
 type Practitioner struct {
 	// http://hl7.org/implement/standards/fhir/STU3/practitioner.html
 	Person
-	Qualification []Qualification `json:"qualification"`
-	Communication []Communication `json:"communication"`
+	Qualification []Qualification   `json:"qualification"`
+	Communication []CodeableConcept `json:"communication"`
 }
 
 func (p Practitioner) GetResourceType() string      { return "Practitioner" }
