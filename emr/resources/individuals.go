@@ -25,14 +25,14 @@ func (p Person) IsPersonLinkTarget()     {}
 type Patient struct {
 	// http://hl7.org/implement/standards/fhir/STU3/patient.html
 	Person
-	DeceasedBoolean      bool                 `json:"deceasedBoolean,omitempty"`
-	DeceasedDateTime     *time.Time           `json:"deceasedDateTime,omitempty"`
-	MaritalStatus        *codes.MaritalStatus `json:"maritalStatus"`
-	Contact              []Contact            `json:"contact"`
-	Communication        []Communication      `json:"communication"`
-	GeneralPractitioner  []Reference          `json:"generalPractitioner"`  // Reference Types: Organization, Practitioner
-	ManagingOrganization *Reference           `json:"managingOrganization"` // Reference Types: Organization
-	Link                 []PatientLink        `json:"link"`
+	DeceasedBoolean      bool                `json:"deceasedBoolean,omitempty"`
+	DeceasedDateTime     *time.Time          `json:"deceasedDateTime,omitempty"`
+	MaritalStatus        codes.MaritalStatus `json:"maritalStatus"`
+	Contact              []Contact           `json:"contact"`
+	Communication        []Communication     `json:"communication"`
+	GeneralPractitioner  []Reference         `json:"generalPractitioner"`  // Reference Types: Organization, Practitioner
+	ManagingOrganization *Reference          `json:"managingOrganization"` // Reference Types: Organization
+	Link                 []PatientLink       `json:"link"`
 }
 
 func (p Patient) GetResourceType() string { return "Patient" }
@@ -75,7 +75,7 @@ type Practitioner struct {
 	Communication []Communication `json:"communication"`
 }
 
-func (p Practitioner) GetResourceType() string { return "Practitioner" }
+func (p Practitioner) GetResourceType() string      { return "Practitioner" }
 func (p Practitioner) IsPersonLinkTarget()          {}
 func (p Practitioner) IsConditionAsserter()         {}
 func (p Practitioner) IsProcedurePerformer()        {}
