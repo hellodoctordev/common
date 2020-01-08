@@ -33,6 +33,10 @@ type CreateResourceRequest struct {
 	Resource resources.Resource
 }
 
+type CreateResourceResponse struct {
+	Resource resources.Resource
+}
+
 func (client *EMRClient) CreateResource(req CreateResourceRequest) (resp *http.Response, err error) {
 	return client.Post(fmt.Sprintf("/emr/resources/%s", req.Resource.GetResourceType()), req.Resource)
 }
