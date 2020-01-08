@@ -3,6 +3,7 @@ package clients
 import (
 	"fmt"
 	"github.com/hellodoctordev/common/emr/resources"
+	"github.com/hellodoctordev/common/utils"
 	"log"
 	"net/http"
 	"os"
@@ -34,9 +35,17 @@ type CreateResourceRequest struct {
 }
 
 type CreateResourceResponse struct {
-	Payload map[string]interface{} `json:"payload"`
+	ID           string `json:"id"`
+	ResourceType string `json:"resourceType"`
 }
 
-func (client *EMRClient) CreateResource(req CreateResourceRequest) (*http.Response, error) {
-	return client.Post(fmt.Sprintf("/emr/resources/%s", req.Resource.GetResourceType()), req.Resource)
+func (client *EMRClient) CreateResource(req CreateResourceRequest) (response CreateResourceResponse, err error) {
+	res, err := client.Post(fmt.Sprintf("/emr/resources/%s", req.Resource.GetResourceType()), req.Resource)
+	if err != nil {
+		return response, err
+	}
+
+	err = utils.ReadBody(res.Body, &response)
+
+	return response, nil
 }
