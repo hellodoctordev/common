@@ -35,8 +35,7 @@ type CreateResourceRequest struct {
 }
 
 type CreateResourceResponse struct {
-	ID           string `json:"id"`
-	ResourceType string `json:"resourceType"`
+	Resource resources.Resource
 }
 
 func (client *EMRClient) CreateResource(req CreateResourceRequest) (response CreateResourceResponse, err error) {
