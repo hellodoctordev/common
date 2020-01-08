@@ -6,7 +6,7 @@ type Resource interface {
 }
 
 type BaseResource struct {
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 	Identifier []Identifier `json:"identifier"`
 }
 
