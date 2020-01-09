@@ -14,8 +14,8 @@ func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
 	return Authenticated(handlerFunc)
 }
 
-func WithAuthRole(role string, handlerFunc http.HandlerFunc) http.Handler {
-	return Authenticated(WithRole(role, handlerFunc))
+func WithAuthRoles(handlerFunc http.HandlerFunc, roles... string) http.Handler {
+	return Authenticated(WithRole(handlerFunc, roles...))
 }
 
 func WithInternalAuth(handlerFunc http.HandlerFunc) http.Handler {
@@ -54,17 +54,19 @@ func Authenticated(next http.Handler) http.Handler {
 	})
 }
 
-func WithRole(role string, next http.Handler) http.Handler {
+func WithRole(next http.Handler, roles... string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestRole := r.Header.Get("X-User-Role")
 
-		if requestRole != role {
-			log.Printf("role '%s' not authorized", requestRole)
-			w.WriteHeader(http.StatusUnauthorized)
-			return
+		for _, role := range roles {
+			if requestRole == role {
+				next.ServeHTTP(w, r)
+			}
 		}
 
-		next.ServeHTTP(w, r)
+		log.Printf("role '%s' not authorized", requestRole)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
 	})
 }
 

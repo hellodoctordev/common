@@ -1,6 +1,8 @@
 package resources
 
-type Encounter struct{}
+type Encounter struct{
+	BaseResource
+}
 
 func (e Encounter) IsConditionContext()          {}
 func (e Encounter) IsProcedureContext()          {}
