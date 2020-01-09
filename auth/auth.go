@@ -61,6 +61,7 @@ func WithRole(next http.Handler, roles... string) http.Handler {
 		for _, role := range roles {
 			if requestRole == role {
 				next.ServeHTTP(w, r)
+				return
 			}
 		}
 
