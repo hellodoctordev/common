@@ -12,7 +12,7 @@ type Organization struct {
 	Alias   []string          `json:"alias"`
 	Telecom []ContactPoint    `json:"telecom"`
 	Address []Address         `json:"address"`
-	PartOf  Reference         `json:"partOf"`
+	PartOf  Reference         `json:"partOf,omitempty"`
 }
 
 func (o Organization) GetResourceType() string { return "Organization" }
