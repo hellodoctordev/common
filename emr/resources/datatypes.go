@@ -40,10 +40,10 @@ type ContactPoint struct {
 type Address struct {
 	Use        codes.AddressUse  `json:"use"`
 	Type       codes.AddressType `json:"type"`
-	Text       string            `json:"text"`
+	Text       string            `json:"text,omitempty"`
 	Line       []string          `json:"line"`
 	City       string            `json:"city"`
-	District   string            `json:"district"`
+	District   string            `json:"district,omitempty"`
 	State      string            `json:"state"`
 	PostalCode string            `json:"postalCode"`
 	Country    string            `json:"country"`
