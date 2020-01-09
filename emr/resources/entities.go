@@ -15,6 +15,7 @@ type Organization struct {
 	PartOf  Reference         `json:"partOf"`
 }
 
+func (o Organization) GetResourceType() string { return "Organization" }
 func (o Organization) IsProcedurePerformer()        {}
 func (o Organization) IsObservationPerformer()      {}
 func (o Organization) IsCarePlanAuthor()            {}
