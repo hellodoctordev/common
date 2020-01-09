@@ -1,8 +1,18 @@
 package resources
 
-import "github.com/hellodoctordev/common/emr/codes"
+import (
+	"github.com/hellodoctordev/common/emr/codes"
+)
 
 type Organization struct {
+	BaseResource
+	Active  bool              `json:"active"`
+	Type    []CodeableConcept `json:"type"`
+	Name    string            `json:"name"`
+	Alias   []string          `json:"alias"`
+	Telecom []ContactPoint    `json:"telecom"`
+	Address []Address         `json:"address"`
+	PartOf  Reference         `json:"partOf"`
 }
 
 func (o Organization) IsProcedurePerformer()        {}
