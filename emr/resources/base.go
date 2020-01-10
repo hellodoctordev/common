@@ -11,3 +11,18 @@ type BaseResource struct {
 }
 
 func (r BaseResource) IsValid() bool { return true }
+
+type Code interface {
+	GetCodes() []Code
+	String() string
+}
+
+func UnmarshalCode(c Code, raw string) Code {
+	for _, code := range c.GetCodes() {
+		if raw == code.String() {
+			return code
+		}
+	}
+
+	return nil
+}
