@@ -21,3 +21,7 @@ func WithCORS(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func WithCORSFunc(next http.HandlerFunc) http.Handler {
+	return WithCORS(next)
+}
