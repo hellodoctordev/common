@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"context"
 	"fmt"
+	"github.com/hellodoctordev/common/constants"
 	"github.com/hellodoctordev/common/firebase"
 	"github.com/hellodoctordev/common/keys"
 	"github.com/hellodoctordev/common/logging"
@@ -14,8 +15,8 @@ import (
 )
 
 var (
-	firestoreClient         = firebase.NewFirestoreClient()
-	googleOAuthDoctorConfig = &oauth2.Config{
+	firestoreClient               = firebase.NewFirestoreClient()
+	googleOAuthPractitionerConfig = &oauth2.Config{
 		ClientID:     keys.GoogleOAuthKeys.DoctorClientID,
 		ClientSecret: keys.GoogleOAuthKeys.DoctorClientSecret,
 		Endpoint: oauth2.Endpoint{
@@ -127,8 +128,8 @@ func getUserOAuthConfig(userID string) (config *oauth2.Config) {
 
 	role, _ := userSnapshot.DataAt("account.role")
 
-	if role.(string) == "provider" {
-		return googleOAuthDoctorConfig
+	if role.(string) == constants.RolePractitioner {
+		return googleOAuthPractitionerConfig
 	} else {
 		return googleOAuthPatientConfig
 	}
