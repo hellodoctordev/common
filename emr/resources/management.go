@@ -55,8 +55,8 @@ type Encounter struct {
 	StatusHistory []EncounterStatusHistory `json:"statusHistory,omitempty"`
 	Class         Coding                   `json:"class,omitempty"`
 	Type          []CodeableConcept        `json:"type,omitempty"`
-	Priority      CodeableConcept          `json:"priority,omitempty"`
-	Subject       Reference                `json:"subject,omitempty"`
+	Priority      *CodeableConcept         `json:"priority,omitempty"`
+	Subject       *Reference               `json:"subject,omitempty"`
 	EpisodeOfCare []Reference              `json:"episodeOfCare,omitempty"`
 	Participant   []EncounterParticipant   `json:"participant,omitempty"`
 	Appointment   *Reference               `json:"appointment,omitempty"`
