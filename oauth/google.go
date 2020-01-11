@@ -89,6 +89,10 @@ func GetGoogleUserOAuthClient(userID string) (client *http.Client, err error) {
 
 	oauthConfig := getUserOAuthConfig(userID)
 
+	if oauthConfig == nil {
+		return nil, nil
+	}
+
 	userOAuthCollectionRef := firestoreClient.Collection(fmt.Sprintf("users/%s/oauthTokens", userID))
 
 	var oauthToken storedOAuthToken
@@ -128,7 +132,10 @@ func getUserOAuthConfig(userID string) (config *oauth2.Config) {
 
 	role, _ := userSnapshot.DataAt("role")
 
-	if role.(string) == constants.RolePractitioner {
+	if role == nil {
+		logging.Warn("no role found for user %s", userID)
+		return nil
+	} else if role.(string) == constants.RolePractitioner {
 		return googleOAuthPractitionerConfig
 	} else {
 		return googleOAuthPatientConfig
