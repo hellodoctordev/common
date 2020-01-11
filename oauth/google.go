@@ -126,7 +126,7 @@ func getUserOAuthConfig(userID string) (config *oauth2.Config) {
 		return
 	}
 
-	role, _ := userSnapshot.DataAt("account.role")
+	role, _ := userSnapshot.DataAt("role")
 
 	if role.(string) == constants.RolePractitioner {
 		return googleOAuthPractitionerConfig

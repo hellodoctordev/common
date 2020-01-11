@@ -46,7 +46,7 @@ type EncounterParticipant struct {
 type EncounterDiagnosis struct {
 	Condition *CodeableConcept `json:"condition,omitempty"`
 	Role      *Reference       `json:"role,omitempty"`
-	Rank      float64          `json:"rank"`
+	Rank      float64          `json:"rank,omitempty"`
 }
 
 type Encounter struct {
