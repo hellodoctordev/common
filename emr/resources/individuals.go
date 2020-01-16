@@ -20,7 +20,6 @@ type Person struct {
 }
 
 func (p Person) GetResourceType() string { return "Person" }
-func (p Person) IsPersonLinkTarget()     {}
 
 type Patient struct {
 	// http://hl7.org/implement/standards/fhir/STU3/patient.html
@@ -37,36 +36,11 @@ type Patient struct {
 
 func (p Patient) GetResourceType() string { return "Patient" }
 
-func (p Patient) IsValid() bool {
-	return p.DeceasedBoolean == false || p.DeceasedDateTime == nil
-}
-func (p Patient) IsPatientLinkOther()          {}
-func (p Patient) IsConditionSubject()          {}
-func (p Patient) IsConditionAsserter()         {}
-func (p Patient) IsProcedureSubject()          {}
-func (p Patient) IsProcedurePerformer()        {}
-func (p Patient) IsObservationSubject()        {}
-func (p Patient) IsObservationPerformer()      {}
-func (p Patient) IsCarePlanAuthor()            {}
-func (p Patient) IsGoalSubject()               {}
-func (p Patient) IsGoalExpressedBy()           {}
-func (p Patient) IsAuthorReference()           {}
-func (p Patient) IsCarePlanActivityPerformer() {}
-
 type RelatedPerson struct {
 	// http://hl7.org/implement/standards/fhir/STU3/relatedperson.html
 	Person
 	Relationship CodeableConcept `json:"relationship"`
 }
-
-func (rp RelatedPerson) IsPatientLinkOther()          {}
-func (rp RelatedPerson) IsConditionAsserter()         {}
-func (rp RelatedPerson) IsProcedurePerformer()        {}
-func (rp RelatedPerson) IsObservationPerformer()      {}
-func (rp RelatedPerson) IsCarePlanAuthor()            {}
-func (rp RelatedPerson) IsGoalExpressedBy()           {}
-func (rp RelatedPerson) IsAuthorReference()           {}
-func (rp RelatedPerson) IsCarePlanActivityPerformer() {}
 
 type Practitioner struct {
 	// http://hl7.org/implement/standards/fhir/STU3/practitioner.html
@@ -76,14 +50,6 @@ type Practitioner struct {
 }
 
 func (p Practitioner) GetResourceType() string      { return "Practitioner" }
-func (p Practitioner) IsPersonLinkTarget()          {}
-func (p Practitioner) IsConditionAsserter()         {}
-func (p Practitioner) IsProcedurePerformer()        {}
-func (p Practitioner) IsObservationPerformer()      {}
-func (p Practitioner) IsCarePlanAuthor()            {}
-func (p Practitioner) IsGoalExpressedBy()           {}
-func (p Practitioner) IsAuthorReference()           {}
-func (p Practitioner) IsCarePlanActivityPerformer() {}
 
 type PractitionerRole struct {
 	// http://hl7.org/implement/standards/fhir/STU3/practitionerrole.html

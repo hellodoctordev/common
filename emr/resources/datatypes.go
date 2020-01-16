@@ -72,10 +72,6 @@ type Communication struct {
 	Preferred bool            `json:"preferred"`
 }
 
-type PatientLinkOther interface {
-	IsPatientLinkOther()
-}
-
 type PatientLink struct {
 	Other Reference      `json:"other"` // Reference Types: Patient, RelatedPerson
 	Type  codes.LinkType `json:"type"`
@@ -87,12 +83,8 @@ type Qualification struct {
 	Issuer     *Reference      `json:"issuer"` // Organization that regulates and issues the qualification
 }
 
-type PersonLinkTarget interface {
-	IsPersonLinkTarget()
-}
-
 type PersonLink struct {
-	Target    PersonLinkTarget             `json:"target"`
+	Target    Reference                    `json:"target"`
 	Assurance codes.IdentityAssuranceLevel `json:"assurance"`
 }
 
@@ -106,96 +98,19 @@ type AllergyIntoleranceReaction struct {
 	Note          []string                         `json:"note"`
 }
 
-type ConditionStageAssessment interface {
-	IsConditionStageAssessment()
-}
-
 type ConditionStage struct {
-	Summary    CodeableConcept   `json:"summary,omitempty"`
-	Assessment []Reference `json:"assessment,omitempty"`
+	Summary    CodeableConcept `json:"summary,omitempty"`
+	Assessment []Reference     `json:"assessment,omitempty"`
 }
 
 type ConditionEvidence struct {
 	Code   []CodeableConcept `json:"code,omitempty"`
-	Detail []Reference `json:"detail,omitempty"`
-}
-
-type ProcedureDefinition interface {
-	IsProcedureDefinition()
-}
-
-type ProcedureSubject interface {
-	IsProcedureSubject()
-}
-
-type ProcedureContext interface {
-	IsProcedureContext()
+	Detail []Reference       `json:"detail,omitempty"`
 }
 
 type Period struct {
 	Start *time.Time `json:"start"`
 	End   *time.Time `json:"end"`
-}
-
-type ProcedurePerformed struct {
-	PerformedDateTime *time.Time `json:"performedDateTime"`
-	PerformedPeriod   *Period    `json:"performedPeriod"`
-}
-
-type ProcedurePerformerActor interface {
-	IsProcedurePerformer()
-}
-
-type ProcedurePerformer struct {
-	Role  codes.ProcedurePerformerRoleCode `json:"role"`
-	Actor ProcedurePerformerActor          `json:"actor"`
-}
-
-type ProcedureReasonReference interface {
-	IsProcedureReasonReference()
-}
-
-type FamilyMemberHistoryDefinition interface {
-	IsFamilyMemberHistoryDefinition()
-}
-
-type ApproximateBirthDate struct {
-	BornPeriod *Period    `json:"bornPeriod"`
-	BornDate   *time.Time `json:"bornDate"`
-	BornString string     `json:"bornString"`
-}
-
-type ApproximateAge struct {
-	AgeAge    int    `json:"ageAge"`
-	AgeString string `json:"ageString"`
-}
-
-type FamilyHistoryReasonReference interface {
-	IsFamilyHistoryReasonReference()
-}
-
-type FamilyMemberHistoryCondition struct {
-	Code    codes.ConditionCode        `json:"code"`
-	Outcome codes.ConditionOutcomeCode `json:"outcome"`
-	Onset   Onset                      `json:"onset"`
-	Note    []string                   `json:"note"`
-}
-
-type ClinicalImpressionContext interface {
-	IsClinicalImpressionContext()
-}
-
-type ClinicalImpressionProblem interface {
-	IsClinicalImpressionProblem()
-}
-
-type InvestigationItem interface {
-	IsInvestigationItem()
-}
-
-type ClinicalImpressionInvestigation struct {
-	Code codes.InvestigationTypeCode `json:"code"`
-	Item []InvestigationItem         `json:"item"`
 }
 
 type Coding struct {
@@ -209,40 +124,6 @@ type Coding struct {
 type CodeableConcept struct {
 	Coding []Coding `json:"coding"`
 	Text   string   `json:"text"`
-}
-
-type FindingItemReference interface {
-	IsFindingItemReference()
-}
-
-type InvestigationFinding struct {
-	ItemCodeableConcept *CodeableConcept      `json:"itemCodeableConcept,omitempty"`
-	ItemReference       *FindingItemReference `json:"itemReference,omitempty"`
-	Basis               string                `json:"basis"`
-}
-
-func (i InvestigationFinding) IsValid() bool {
-	return i.ItemCodeableConcept == nil || i.ItemReference == nil
-}
-
-type ClinicalImpressionAction interface {
-	IsClinicalImpressionAction()
-}
-
-type ObservationBasedOnReference interface {
-	IsObservationBasedOnReference()
-}
-
-type ObservationSubject interface {
-	IsObservationSubject()
-}
-
-type ObservationContext interface {
-	IsObservationContext()
-}
-
-type ObservationPerformer interface {
-	IsObservationPerformer()
 }
 
 type QuantityComparatorCode = string
@@ -262,117 +143,39 @@ type Quantity struct {
 	Code       string                 `json:"code"`
 }
 
-type Range struct {
-	Low  *Quantity `json:"low"`
-	High *Quantity `json:"high"`
-}
-
-type CarePlanDefinition interface {
-	IsCarePlanDefinition()
-}
-
-type CarePlanContext interface {
-	IsCarePlanContext()
-}
-
-type CarePlanAuthor interface {
-	IsCarePlanAuthor()
-}
-
-type GoalSubject interface {
-	IsGoalSubject()
-}
-
-type GoalTarget struct {
-	Measure        *codes.ObservationCode `json:"measure"`
-	DetailQuantity *Quantity              `json:"detailQuantity,omitempty"`
-	DetailRange    *Range                 `json:"range"`
-	DueDate        *time.Time             `json:"dueDate"`
-}
-
-func (gt GoalTarget) IsValid() bool {
-	return gt.DetailQuantity == nil || gt.DetailRange == nil
-}
-
-type GoalExpressedBy interface {
-	IsGoalExpressedBy()
-}
-
-type GoalAddresses interface {
-	IsGoalAddresses()
-}
-
-type Goal struct {
-	Identifier       []Identifier                `json:"identifier"`
-	Status           codes.GoalStatus            `json:"status"`
-	Category         codes.GoalCategory          `json:"category"`
-	Priority         codes.GoalPriority          `json:"priority"`
-	Description      string                      `json:"description"`
-	Subject          GoalSubject                 `json:"subject"`
-	StartDate        *time.Time                  `json:"startDate"`
-	Target           *GoalTarget                 `json:"target"`
-	StatusDate       *time.Time                  `json:"statusDate"`
-	StatusReason     string                      `json:"statusReason"`
-	ExpressedBy      *GoalExpressedBy            `json:"expressedBy"`
-	Addresses        []GoalAddresses             `json:"addresses"`
-	Note             []string                    `json:"note"`
-	OutcomeCode      []codes.ClinicalFindingCode `json:"outcomeCode"`
-	OutcomeReference []Observation               `json:"outcomeReference"`
-}
-
-type AuthorReference interface {
-	IsAuthorReference()
-}
-
 type Annotation struct {
-	AuthorReference *AuthorReference `json:"authorReference"`
-	AuthorString    string           `json:"authorString"`
-	Time            *time.Time       `json:"time"`
-	Text            string           `json:"text"`
-}
-
-type CarePlanActivityDetailDefinition interface {
-	IsCarePlanActivityDetailDefinition()
-}
-
-type CarePlanActivityPerformer interface {
-	IsCarePlanActivityPerformer()
-}
-
-type ProductReference interface {
-	IsProductReference()
+	AuthorReference *Reference `json:"authorReference,omitempty"`
+	AuthorString    string     `json:"authorString,omitempty"`
+	Time            *time.Time `json:"time,omitempty"`
+	Text            string     `json:"text"`
 }
 
 type CarePlanActivityDetail struct {
-	Category               *codes.CarePlanActivityDetailCategory `json:"category"`
-	Definition             *CarePlanActivityDetailDefinition     `json:"definition"`
-	Code                   *codes.CarePlanActivityCode           `json:"code"`
-	ReasonCode             *codes.ActivityReasonCode             `json:"reasonCode"`
-	ReasonReference        []Condition                           `json:"reasonReference"`
-	Goal                   []Goal                                `json:"goal"`
-	Status                 codes.CarePlanActivityStatus          `json:"status"`
-	StatusReason           string                                `json:"statusReason"`
-	Prohibited             bool                                  `json:"prohibited"`
-	ScheduledPeriod        *Period                               `json:"scheduledPeriod"`
-	ScheduledString        string                                `json:"scheduledString"`
-	Location               *Location                             `json:"location"`
-	Performer              []CarePlanActivityPerformer           `json:"performer"`
-	ProductCodeableConcept *CodeableConcept                      `json:"productCodeableConcept"`
-	ProductReference       *ProductReference                     `json:"productReference"`
-	DailyAmount            *Quantity                             `json:"dailyAmount"`
-	Quantity               *Quantity                             `json:"quantity"`
-	Description            string                                `json:"description"`
-}
-
-func (c CarePlanActivityDetail) IsValid() bool {
-	return (c.ScheduledPeriod == nil || c.ScheduledString == "") && (c.ProductCodeableConcept == nil || c.ProductReference == nil)
+	Category               *CodeableConcept             `json:"category,omitempty"`
+	Definition             *Reference                   `json:"definition,omitempty"`
+	Code                   *CodeableConcept             `json:"code,omitempty"`
+	ReasonCode             []CodeableConcept            `json:"reasonCode,omitempty"`
+	ReasonReference        []Reference                  `json:"reasonReference,omitempty"`
+	Goal                   []Reference                  `json:"goal,omitempty"`
+	Status                 codes.CarePlanActivityStatus `json:"status"`
+	StatusReason           string                       `json:"statusReason,omitempty"`
+	Prohibited             bool                         `json:"prohibited,omitempty"`
+	ScheduledPeriod        *Period                      `json:"scheduledPeriod,omitempty"`
+	ScheduledString        string                       `json:"scheduledString,omitempty"`
+	Location               *Reference                   `json:"location,omitempty"`
+	Performer              []Reference                  `json:"performer,omitempty"`
+	ProductCodeableConcept *CodeableConcept             `json:"productCodeableConcept,omitempty"`
+	ProductReference       *Reference                   `json:"productReference,omitempty"`
+	DailyAmount            *Quantity                    `json:"dailyAmount,omitempty"`
+	Quantity               *Quantity                    `json:"quantity,omitempty"`
+	Description            string                       `json:"description,omitempty"`
 }
 
 type CarePlanActivity struct {
-	Outcome          []codes.CarePlanActivityOutcome `json:"outcomeCodeableConcept"`
-	OutcomeReference []struct{}                      `json:"outcomeReference"`
-	Progress         []Annotation                    `json:"progress"`
-	Reference        *struct{}                       `json:"reference"`
-	Detail           *CarePlanActivityDetail         `json:"detail"`
-	Note             []Annotation                    `json:"note"`
+	OutcomeCodeableConcept []CodeableConcept       `json:"outcomeCodeableConcept,omitempty"`
+	OutcomeReference       []Reference             `json:"outcomeReference,omitempty"`
+	Progress               []Annotation            `json:"progress,omitempty"`
+	Reference              *Reference              `json:"reference,omitempty"`
+	Detail                 *CarePlanActivityDetail `json:"detail,omitempty"`
+	Note                   []Annotation            `json:"note,omitempty"`
 }

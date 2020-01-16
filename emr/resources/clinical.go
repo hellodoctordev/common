@@ -18,17 +18,6 @@ type AllergyIntolerance struct {
 	Reaction           []AllergyIntoleranceReaction               `json:"reaction"`
 }
 
-func (a AllergyIntolerance) IsFamilyHistoryReasonReference() {}
-func (a AllergyIntolerance) IsClinicalImpressionProblem()    {}
-
-type ConditionSubject interface {
-	IsConditionSubject()
-}
-
-type ConditionContext interface {
-	IsConditionContext()
-}
-
 type Condition struct {
 	Identifier         []Identifier                      `json:"identifier"`
 	ClinicalStatus     codes.ConditionClinicalStatus     `json:"clinicalStatus,omitempty"`
@@ -53,87 +42,103 @@ type Condition struct {
 	Note               []Annotation                      `json:"note,omitempty"`
 }
 
-func (c Condition) IsProcedureReasonReference()     {}
-func (c Condition) IsFamilyHistoryReasonReference() {}
-func (c Condition) IsClinicalImpressionProblem()    {}
-func (c Condition) IsInvestigationItem()            {}
-func (c Condition) IsFindingItemReference()         {}
-func (c Condition) IsGoalAddresses()                {}
-
 type Procedure struct {
-	Identifier         []Identifier                      `json:"identifier"`
-	Definition         []ProcedureDefinition             `json:"definition"`
-	Status             codes.EventStatus                 `json:"status"`
-	NotDone            bool                              `json:"notDone"`
-	NotDoneReason      codes.ProcedureNotPerformedReason `json:"notDoneReason"`
-	Category           codes.ProcedureCategory           `json:"category"`
-	Subject            ProcedureSubject                  `json:"subject"`
-	Context            ProcedureContext                  `json:"context"`
-	Performed          ProcedurePerformed                `json:"performed"`
-	Performer          []ProcedurePerformer              `json:"performer"`
-	Location           *Location                         `json:"location"`
-	ReasonCode         []codes.ProcedureReasonCode       `json:"reasonCode"`
-	ReasonReference    []ProcedureReasonReference        `json:"reasonReference"`
-	BodySite           codes.BodyStructure               `json:"bodySite"`
-	Outcome            codes.ProcedureOutcomeCode        `json:"outcome"`
-	Report             []DiagnosticReport                `json:"report"`
-	Complication       []codes.ConditionCode             `json:"complication"`
-	ComplicationDetail []Condition                       `json:"complicationDetail"`
-	FollowUp           []codes.ProcedureFollowUpCode     `json:"followUp"`
-	Note               []string                          `json:"note"`
+	// http://hl7.org/implement/standards/fhir/STU3/procedure.html
+	BaseResource
+	Definition         []Reference          `json:"definition,omitempty"`
+	BasedOn            []Reference          `json:"basedOn,omitempty"`
+	PartOf             []Reference          `json:"partOf,omitempty"`
+	Status             codes.EventStatus    `json:"status"`
+	NotDone            bool                 `json:"notDone,omitempty"`
+	NotDoneReason      *CodeableConcept     `json:"notDoneReason,omitempty"`
+	Category           *CodeableConcept     `json:"category,omitempty"`
+	Subject            Reference            `json:"subject"`
+	Context            *Reference           `json:"context,omitempty"`
+	PerformedDateTime  *time.Time           `json:"performedDateTime,omitempty"`
+	PerformedPeriod    *Period              `json:"performedPeriod,omitempty"`
+	Performer          []ProcedurePerformer `json:"performer,omitempty"`
+	Location           *Reference           `json:"location,omitempty"`
+	ReasonCode         []CodeableConcept    `json:"reasonCode,omitempty"`
+	ReasonReference    []Reference          `json:"reasonReference,omitempty"`
+	BodySite           []CodeableConcept    `json:"bodySite,omitempty"`
+	Outcome            *CodeableConcept     `json:"outcome,omitempty"`
+	Report             []Reference          `json:"report,omitempty"`
+	Complication       []CodeableConcept    `json:"complication,omitempty"`
+	ComplicationDetail []Reference          `json:"complicationDetail,omitempty"`
+	FollowUp           []CodeableConcept    `json:"followUp,omitempty"`
+	Note               []Annotation         `json:"note,omitempty"`
 }
 
-func (p Procedure) IsClinicalImpressionAction() {}
+type ProcedurePerformer struct {
+	Role       *CodeableConcept `json:"role,omitempty"`
+	Actor      Reference        `json:"actor"`
+	OnBehalfOf *Reference       `json:"onBehalfOf,omitempty"`
+}
 
 type FamilyMemberHistory struct {
 	// http://hl7.org/implement/standards/fhir/STU3/familymemberhistory.html
-	Identifier       []Identifier                     `json:"identifier"`
-	Definition       FamilyMemberHistoryDefinition    `json:"definition"`
-	Status           codes.FamilyHistoryStatusCode    `json:"status"`
-	NotDone          bool                             `json:"notDone"`
-	NotDoneReason    codes.FamilyHistoryNotDoneReason `json:"notDoneReason"`
-	Patient          *Patient                         `json:"patient"`
-	Date             *time.Time                       `json:"date"`
-	Name             string                           `json:"name"`
-	Relationship     codes.FamilyMemberCode           `json:"relationship"`
-	Gender           codes.AdministrativeGender       `json:"gender"`
-	Born             ApproximateBirthDate             `json:"born"`
-	Age              ApproximateAge                   `json:"age"`
-	EstimatedAge     bool                             `json:"estimatedAge"`
-	DeceasedBoolean  bool                             `json:"deceasedBoolean"`
-	DeceasedDateTime *time.Time                       `json:"deceasedDateTime"`
-	ReasonCode       []codes.ClinicalFindingCode      `json:"reasonCode"`
-	ReasonReference  []FamilyHistoryReasonReference   `json:"reasonReference"`
-	Note             []string                         `json:"note"`
-	Condition        []FamilyMemberHistoryCondition   `json:"condition"`
+	BaseResource
+	Definition       []Reference                    `json:"definition,omitempty"`
+	Status           codes.FamilyHistoryStatusCode  `json:"status"`
+	NotDone          bool                           `json:"notDone,omitempty"`
+	NotDoneReason    *CodeableConcept               `json:"notDoneReason,omitempty"`
+	Patient          Reference                      `json:"patient"`
+	Date             *time.Time                     `json:"date,omitempty"`
+	Name             string                         `json:"name,omitempty"`
+	Relationship     CodeableConcept                `json:"relationship,omitempty"`
+	Gender           *codes.AdministrativeGender    `json:"gender,omitempty"`
+	BornPeriod       *Period                        `json:"bornPeriod,omitempty"`
+	BornDate         *time.Time                     `json:"bornDate,omitempty"`
+	BornString       string                         `json:"bornString,omitempty"`
+	AgeAge           int                            `json:"ageAge,omitempty"`
+	AgeString        string                         `json:"ageString,omitempty"`
+	EstimatedAge     bool                           `json:"estimatedAge,omitempty"`
+	DeceasedBoolean  bool                           `json:"deceasedBoolean,omitempty"`
+	DeceasedDateTime *time.Time                     `json:"deceasedDateTime,omitempty"`
+	ReasonCode       []CodeableConcept              `json:"reasonCode,omitempty"`
+	ReasonReference  []Reference                    `json:"reasonReference,omitempty"`
+	Note             []Annotation                   `json:"note,omitempty"`
+	Condition        []FamilyMemberHistoryCondition `json:"condition"`
 }
 
-func (f FamilyMemberHistory) IsValid() bool {
-	return f.DeceasedBoolean == false || f.DeceasedDateTime == nil
+type FamilyMemberHistoryCondition struct {
+	Code        CodeableConcept  `json:"code"`
+	Outcome     *CodeableConcept `json:"outcome,omitempty"`
+	OnsetPeriod *Period          `json:"onsetPeriod,omitempty"`
+	OnsetString string           `json:"onsetString,omitempty"`
+	Note        []Annotation     `json:"note"`
 }
-
-func (f FamilyMemberHistory) IsInvestigationItem() {}
 
 type ClinicalImpression struct {
 	// http://hl7.org/implement/standards/fhir/STU3/clinicalimpression.html
-	Identifier               []Identifier                        `json:"identifier"`
-	Status                   codes.ClinicalImpressionStatus      `json:"status"`
-	Code                     string                              `json:"code"`
-	Description              string                              `json:"description"`
-	Subject                  *Patient                            `json:"subject"`
-	Context                  ClinicalImpressionContext           `json:"context"`
-	EffectiveDateTime        *time.Time                          `json:"effectiveDateTime"` // Time of assessment
-	Date                     *time.Time                          `json:"date"`              // When the assessment was documented
-	Assessor                 *Practitioner                       `json:"assessor"`
-	Previous                 *ClinicalImpression                 `json:"previous"`
-	Problem                  []ClinicalImpressionProblem         `json:"problem"`
-	Investigation            []ClinicalImpressionInvestigation   `json:"investigation"`
-	Protocol                 []string                            `json:"protocol"`
-	Summary                  string                              `json:"summary"`
-	Finding                  []InvestigationFinding              `json:"finding"`
-	PrognosisCodeableConcept []codes.ClinicalImpressionPrognosis `json:"prognosisCodeableConcept"`
-	Action                   []ClinicalImpressionAction          `json:"action"`
-	Note                     []string                            `json:"note"`
+	BaseResource
+	Status                   codes.ClinicalImpressionStatus    `json:"status"`
+	Code                     *CodeableConcept                  `json:"code,omitempty"`
+	Description              string                            `json:"description,omitempty"`
+	Subject                  Reference                         `json:"subject"`
+	Context                  *Reference                        `json:"context,omitempty"`
+	EffectiveDateTime        *time.Time                        `json:"effectiveDateTime,omitempty"` // Time of assessment
+	Date                     *time.Time                        `json:"date,omitempty"`              // When the assessment was documented
+	Assessor                 *Reference                        `json:"assessor,omitempty"`
+	Previous                 *Reference                        `json:"previous,omitempty"`
+	Problem                  []Reference                       `json:"problem,omitempty"`
+	Investigation            []ClinicalImpressionInvestigation `json:"investigation,omitempty"`
+	Protocol                 []string                          `json:"protocol,omitempty"`
+	Summary                  string                            `json:"summary,omitempty"`
+	Finding                  []ClinicalImpressionFinding       `json:"finding,omitempty"`
+	PrognosisCodeableConcept []CodeableConcept                 `json:"prognosisCodeableConcept,omitempty"`
+	PrognosisReference       []Reference                       `json:"prognosisReference,omitempty"`
+	Action                   []Reference                       `json:"action,omitempty"`
+	Note                     []Annotation                      `json:"note,omitempty"`
 }
 
-func (ci ClinicalImpression) IsConditionStageAssessment() {}
+type ClinicalImpressionInvestigation struct {
+	Code CodeableConcept `json:"code"`
+	Item []Reference     `json:"item,omitempty"`
+}
+
+type ClinicalImpressionFinding struct {
+	ItemCodeableConcept *CodeableConcept `json:"itemCodeableConcept,omitempty"`
+	ItemReference       *Reference       `json:"itemReference,omitempty"`
+	Basis               string           `json:"basis"`
+}
