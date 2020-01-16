@@ -424,8 +424,6 @@ const (
 	GoalPriorityLow    GoalPriority = "low-priority"
 )
 
-type CarePlanActivityOutcome = int // http://hl7.org/implement/standards/fhir/STU3/valueset-care-plan-activity-outcome.html
-
 type CarePlanActivityDetailCategory = string
 
 const (
