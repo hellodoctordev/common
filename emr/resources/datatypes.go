@@ -1,14 +1,22 @@
 package resources
 
 import (
+	"fmt"
 	"github.com/hellodoctordev/common/emr/codes"
 	"time"
 )
 
 type Reference struct {
 	Reference  string      `json:"reference"`
-	Identifier *Identifier `json:"identifier"`
+	Identifier *Identifier `json:"identifier,omitempty"`
 	Display    string      `json:"display"`
+}
+
+func ResourceReference(resourceType, resourceID, display string) *Reference {
+	return &Reference{
+		Reference:  fmt.Sprintf("%s/%s", resourceType, resourceID),
+		Display:    display,
+	}
 }
 
 type Date string
