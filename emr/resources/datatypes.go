@@ -106,27 +106,18 @@ type AllergyIntoleranceReaction struct {
 	Note          []string                         `json:"note"`
 }
 
-type Onset struct {
-	OnsetDateTime *time.Time `json:"onsetDateTime"`
-	OnsetString   string     `json:"onsetString"`
-}
-
-type Abatement struct {
-	AbatementDateTime *time.Time `json:"abatementDateTime"`
-}
-
 type ConditionStageAssessment interface {
 	IsConditionStageAssessment()
 }
 
 type ConditionStage struct {
-	Summary    codes.ConditionStageCode   `json:"summary"`
-	Assessment []ConditionStageAssessment `json:"assessment"`
+	Summary    CodeableConcept   `json:"summary,omitempty"`
+	Assessment []Reference `json:"assessment,omitempty"`
 }
 
 type ConditionEvidence struct {
-	Code   []codes.ManifestationAndSymptomCode `json:"code"`
-	Detail []struct{}
+	Code   []CodeableConcept `json:"code,omitempty"`
+	Detail []Reference `json:"detail,omitempty"`
 }
 
 type ProcedureDefinition interface {
