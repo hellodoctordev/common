@@ -29,27 +29,28 @@ type ConditionContext interface {
 	IsConditionContext()
 }
 
-type ConditionAsserter interface {
-	IsConditionAsserter()
-}
-
 type Condition struct {
 	Identifier         []Identifier                      `json:"identifier"`
-	ClinicalStatus     codes.ConditionClinicalStatus     `json:"clinicalStatus"`
-	VerificationStatus codes.ConditionVerificationStatus `json:"verificationStatus"`
-	Category           []codes.ConditionCategory         `json:"category"`
-	Severity           codes.ConditionSeverity           `json:"severity"`
-	Code               codes.ConditionCode               `json:"code"`
-	BodySite           []codes.BodyStructure             `json:"bodySite"`
-	Subject            ConditionSubject                  `json:"subject"`
-	Context            ConditionContext                  `json:"context"`
-	Onset              Onset                             `json:"onset"`
-	Abatement          Abatement                         `json:"abatement"`
-	AssertedDate       *time.Time                        `json:"assertedDate"`
-	Asserter           ConditionAsserter                 `json:"asserter"`
-	Stage              ConditionStage                    `json:"stage"`
-	Evidence           []ConditionEvidence               `json:"evidence"`
-	Note               []string                          `json:"note"`
+	ClinicalStatus     codes.ConditionClinicalStatus     `json:"clinicalStatus,omitempty"`
+	VerificationStatus codes.ConditionVerificationStatus `json:"verificationStatus,omitempty"`
+	Category           []CodeableConcept                 `json:"category,omitempty"`
+	Severity           CodeableConcept                   `json:"severity,omitempty"`
+	Code               CodeableConcept                   `json:"code,omitempty"`
+	BodySite           []CodeableConcept                 `json:"bodySite,omitempty"`
+	Subject            Reference                         `json:"subject"`
+	Context            *Reference                        `json:"context,omitempty"`
+	OnsetDateTime      *time.Time                        `json:"onsetDateTime,omitempty"`
+	OnsetPeriod        *Period                           `json:"onsetPeriod,omitempty"`
+	OnsetString        string                            `json:"onsetString,omitempty"`
+	AbatementDateTime  *time.Time                        `json:"abatement,omitempty"`
+	AbatementBoolean   bool                              `json:"abatementBoolean,omitempty"`
+	AbatementPeriod    *Period                           `json:"abatementPeriod,omitempty"`
+	AbatementString    string                            `json:"abatementString,omitempty"`
+	AssertedDate       *time.Time                        `json:"assertedDate,omitempty"`
+	Asserter           *Reference                        `json:"asserter,omitempty"`
+	Stage              *ConditionStage                   `json:"stage,omitempty"`
+	Evidence           []ConditionEvidence               `json:"evidence,omitempty"`
+	Note               []Annotation                      `json:"note,omitempty"`
 }
 
 func (c Condition) IsProcedureReasonReference()     {}
