@@ -30,13 +30,12 @@ func NewConsultationsClient() *ConsultationsClient {
 }
 
 type CreateConsultationRequest struct {
-	PatientUserUID      string     `json:"patientUserUID"`
-	PractitionerUserUID string     `json:"practitionerUserUID"`
-	ConsultationType    string     `json:"consultationType"`   // see consultations.types for enum values
-	ConsultationStatus  string     `json:"consultationStatus"` // see consultations.types for enum values
-	RequestMode         string     `json:"requestMode"`        // see scheduling.types for enum values
-	RequestedStart      *time.Time `json:"requestedStart"`
-	RequestedEnd        *time.Time `json:"requestedEnd"`
+	PatientUserUID      string    `json:"patientUserUID"`
+	PractitionerUserUID string    `json:"practitionerUserUID"`
+	ConsultationType    string    `json:"consultationType"`   // see consultations.types for enum values
+	ConsultationStatus  string    `json:"consultationStatus"` // see consultations.status for enum values
+	ScheduledStart      time.Time `json:"requestedStart"`
+	ScheduledEnd        time.Time `json:"requestedEnd"`
 }
 
 type CreateConsultationResponse struct {
@@ -49,7 +48,7 @@ func (client *ConsultationsClient) CreateConsultation(req CreateConsultationRequ
 }
 
 type StartChatConsultationRequest struct {
-	Practitioner     *firestore.DocumentRef `json:"practitionerRef"`
+	Practitioner *firestore.DocumentRef `json:"practitionerRef"`
 	Consultation *firestore.DocumentRef `json:"consultationRef"`
 }
 
