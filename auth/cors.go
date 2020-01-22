@@ -1,16 +1,23 @@
 package auth
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+)
 
 func WithCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept")
 
-		// FIXME Only allow localhost in DEV deployment
-		if r.Header.Get("Origin") == "http://localhost:3000" {
-			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		} else if r.Header.Get("Origin") == "http://api.stage.hellodoctor.com.mx" {
+		origin := r.Header.Get("Origin")
+
+		// FIXME Only allow localhost/ngrok.io in DEV deployment
+		if origin == "http://localhost:3000" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		} else if strings.HasSuffix(origin, "ngrok.io") {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		} else if origin == "http://api.stage.hellodoctor.com.mx" {
 			w.Header().Set("Access-Control-Allow-Origin", "api.stage.hellodoctor.com.mx")
 		}
 
