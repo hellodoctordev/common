@@ -97,3 +97,12 @@ type RequestConsultationFollowupRequest struct {
 func (client *NotificationClient) RequestConsultationFollowup(req RequestConsultationFollowupRequest) (*http.Response, error) {
 	return client.Post("/notifications/request-consultation-followup", req)
 }
+
+type ConsultationReminderRequest struct {
+	Target       *firestore.DocumentRef `json:"target"`
+	Consultation *firestore.DocumentRef `json:"consultation"`
+}
+
+func (client *NotificationClient) ConsultationReminder(req ConsultationReminderRequest) (*http.Response, error) {
+	return client.Post("/notifications/consultation-reminder", req)
+}
