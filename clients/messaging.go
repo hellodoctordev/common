@@ -2,6 +2,7 @@ package clients
 
 import (
 	"fmt"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"net/http"
 	"os"
 )
@@ -26,7 +27,7 @@ func NewMessagingClient() *MessagingClient {
 }
 
 type CreateChatRequest struct {
-	PatientUserUID  string `json:"patientUserUID"`
+	PatientUserUID      string `json:"patientUserUID"`
 	PractitionerUserUID string `json:"practitionerUserUID"`
 }
 
@@ -76,4 +77,28 @@ func (client *MessagingClient) SendChatMessage(chatID, consultationID, senderID,
 	}
 
 	return client.Post(fmt.Sprintf("/messaging/chats/%s/messages", chatID), req)
+}
+
+type SendEmailRequest struct {
+	From             mail.SGMailV3 `json:"from"`
+	To               mail.SGMailV3 `json:"to"`
+	Subject          string        `json:"subject"`
+	PlainTextContent string        `json:"plainTextContent"`
+	HTMLContent      string        `json:"htmlContent"`
+}
+
+func (client *MessagingClient) SendEmail(req SendEmailRequest) (*http.Response, error) {
+	return client.Post("/messaging/emails", req)
+}
+
+type SendTemplateEmailRequest struct {
+	From       mail.SGMailV3          `json:"from"`
+	To         mail.SGMailV3          `json:"to"`
+	Subject    string                 `json:"subject"`
+	TemplateID string                 `json:"templateID"`
+	Args       map[string]interface{} `json:"args"`
+}
+
+func (client *MessagingClient) SendTemplateEmail(req SendTemplateEmailRequest) (*http.Response, error) {
+	return client.Post(fmt.Sprintf("/messaging/emails/%s", req.TemplateID), req)
 }
