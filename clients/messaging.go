@@ -80,11 +80,11 @@ func (client *MessagingClient) SendChatMessage(chatID, consultationID, senderID,
 }
 
 type SendEmailRequest struct {
-	From             mail.SGMailV3 `json:"from"`
-	To               mail.SGMailV3 `json:"to"`
-	Subject          string        `json:"subject"`
-	PlainTextContent string        `json:"plainTextContent"`
-	HTMLContent      string        `json:"htmlContent"`
+	From             mail.Email `json:"from"`
+	To               mail.Email `json:"to"`
+	Subject          string     `json:"subject"`
+	PlainTextContent string     `json:"plainTextContent"`
+	HTMLContent      string     `json:"htmlContent"`
 }
 
 func (client *MessagingClient) SendEmail(req SendEmailRequest) (*http.Response, error) {
@@ -92,8 +92,8 @@ func (client *MessagingClient) SendEmail(req SendEmailRequest) (*http.Response, 
 }
 
 type SendTemplateEmailRequest struct {
-	From       mail.SGMailV3          `json:"from"`
-	To         mail.SGMailV3          `json:"to"`
+	From       mail.Email             `json:"from"`
+	To         mail.Email             `json:"to"`
 	Subject    string                 `json:"subject"`
 	TemplateID string                 `json:"templateID"`
 	Args       map[string]interface{} `json:"args"`
