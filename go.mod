@@ -14,6 +14,8 @@ require (
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/olivere/elastic/v7 v7.0.6
 	github.com/rogpeppe/go-internal v1.3.2 // indirect
+	github.com/sendgrid/rest v2.4.1+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.5.0+incompatible // indirect
 	go.opencensus.io v0.22.1 // indirect
 	golang.org/x/crypto v0.0.0-20190911031432-227b76d455e7 // indirect
 	golang.org/x/exp v0.0.0-20190829153037-c13cbed26979 // indirect
