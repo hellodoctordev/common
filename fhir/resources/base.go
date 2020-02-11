@@ -5,8 +5,8 @@ type Resource interface {
 }
 
 type BaseResource struct {
-	ID string `json:"id,omitempty"`
-	Identifier []Identifier `json:"identifier"`
+	ID         string       `firestore:"id,omitempty" json:"id,omitempty"`
+	Identifier []Identifier `firestore:"identifier,omitempty" json:"identifier"`
 }
 
 type Code interface {
