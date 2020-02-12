@@ -2,17 +2,17 @@ package clients
 
 import (
 	"fmt"
-	"github.com/hellodoctordev/common/emr/resources"
+	"github.com/hellodoctordev/common/fhir/resources"
 	"log"
 	"net/http"
 	"os"
 )
 
-type EMRClient struct {
+type FHIRClient struct {
 	HttpServiceClient
 }
 
-func NewEMRClient() *EMRClient {
+func NewFHIRClient() *FHIRClient {
 	serviceHost := os.Getenv("BASE_SERVICE_URL")
 
 	if len(serviceHost) == 0 {
@@ -21,7 +21,7 @@ func NewEMRClient() *EMRClient {
 
 	log.Printf("service host: %s", serviceHost)
 
-	return &EMRClient{
+	return &FHIRClient{
 		HttpServiceClient{
 			Client:      http.DefaultClient,
 			ServiceHost: serviceHost,
@@ -37,6 +37,6 @@ type CreateResourceResponse struct {
 	Resource resources.Resource
 }
 
-func (client *EMRClient) CreateResource(req CreateResourceRequest) (resp *http.Response, err error) {
-	return client.Post(fmt.Sprintf("/emr/resources/%s", req.Resource.GetResourceType()), req.Resource)
+func (client *FHIRClient) CreateResource(req CreateResourceRequest) (resp *http.Response, err error) {
+	return client.Post(fmt.Sprintf("/fhir/resources/%s", req.Resource.GetResourceType()), req.Resource)
 }
