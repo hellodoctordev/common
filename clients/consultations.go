@@ -2,7 +2,7 @@ package clients
 
 import (
 	"cloud.google.com/go/firestore"
-	"github.com/hellodoctordev/common/emr/resources"
+	"github.com/hellodoctordev/common/fhir/resources"
 	"log"
 	"net/http"
 	"os"
