@@ -8,6 +8,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/asn1"
 	"encoding/hex"
@@ -82,7 +83,8 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 		}
 
 		for _, participantDevicePublicKey := range participantPublicKeys {
-			encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantDevicePublicKey.PublicKey, chatAESKey)
+			//encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantDevicePublicKey.PublicKey, chatAESKey)
+			encryptedChatAESKeyBytes, err2 := rsa.EncryptOAEP(sha256.New(), reader, &participantDevicePublicKey.PublicKey, chatAESKey, nil)
 			if err2 != nil {
 				logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
 				continue
@@ -170,22 +172,37 @@ func encryptChatPrivateKey(aesKey []byte, chatPrivateKeyBytes []byte) ([]byte, [
 	}
 
 	paddedChatPrivateKeyBytes := pad(chatPrivateKeyBytes)
-	encryptedChatPrivateKeyBytes := make([]byte, aes.BlockSize+len(paddedChatPrivateKeyBytes))
+	encryptedChatPrivateKeyBytes := make([]byte, aes.BlockSize)
 
 	iv := encryptedChatPrivateKeyBytes[:aes.BlockSize]
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return nil, nil, err
 	}
 
+	//gcm, err := cipher.NewGCM(block)
+	//if err != nil {
+	//	logging.Error("error creating new gcm: %s", err)
+	//	return nil, nil, err
+	//}
+
+
+	nonce := make([]byte, 12)
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		logging.Error("error encrypting chat private key: %s", err)
+		return nil, nil, err
+	}
+
 	cfb := cipher.NewCBCEncrypter(block, iv)
 	cfb.CryptBlocks(encryptedChatPrivateKeyBytes[aes.BlockSize:], paddedChatPrivateKeyBytes)
+
+	//encryptedChatPrivateKeyBytes := gcm.Seal(nil, nonce, chatPrivateKeyBytes, nil)
 
 	return encryptedChatPrivateKeyBytes, iv, nil
 }
 
-func pad(src []byte) []byte {
-	padding := aes.BlockSize - len(src)%aes.BlockSize
-	padBytes := bytes.Repeat([]byte{byte(padding)}, padding)
+func pad(aesKey []byte) []byte {
+	padLength := aes.BlockSize - len(aesKey) % aes.BlockSize
+	padBytes := bytes.Repeat([]byte{byte(padLength)}, padLength)
 
-	return append(src, padBytes...)
+	return append(aesKey, padBytes...)
 }
