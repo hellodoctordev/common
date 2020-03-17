@@ -172,7 +172,7 @@ func encryptChatPrivateKey(aesKey []byte, chatPrivateKeyBytes []byte) ([]byte, [
 	}
 
 	paddedChatPrivateKeyBytes := pad(chatPrivateKeyBytes)
-	encryptedChatPrivateKeyBytes := make([]byte, aes.BlockSize)
+	encryptedChatPrivateKeyBytes := make([]byte, len(paddedChatPrivateKeyBytes))
 
 	iv := encryptedChatPrivateKeyBytes[:aes.BlockSize]
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
