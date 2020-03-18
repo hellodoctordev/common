@@ -5,7 +5,7 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
+	"crypto/sha1"
 	"encoding/asn1"
 	"encoding/hex"
 	"encoding/pem"
@@ -36,7 +36,7 @@ func GenerateChatKey(chatID string, participantRefs []*firestore.DocumentRef) {
 
 		for _, participantDevicePublicKey := range participantPublicKeys {
 			//encryptedChatAESKeyBytes, err2 := rsa.EncryptPKCS1v15(reader, &participantDevicePublicKey.PublicKey, chatAESKey)
-			encryptedChatAESKeyBytes, err2 := rsa.EncryptOAEP(sha256.New(), reader, &participantDevicePublicKey.PublicKey, chatAESKey, nil)
+			encryptedChatAESKeyBytes, err2 := rsa.EncryptOAEP(sha1.New(), reader, &participantDevicePublicKey.PublicKey, chatAESKey, nil)
 			if err2 != nil {
 				logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, participantRef.ID, err2)
 				continue
