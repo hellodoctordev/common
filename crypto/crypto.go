@@ -1,15 +1,11 @@
 package crypto
 
 import (
-	"bytes"
 	"cloud.google.com/go/firestore"
 	"context"
-	"crypto/aes"
-	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/asn1"
 	"encoding/hex"
 	"encoding/pem"
@@ -17,62 +13,18 @@ import (
 	"github.com/hellodoctordev/common/logging"
 	"google.golang.org/api/iterator"
 	"io"
-	"strings"
 )
 
 var firestoreClient = firebase.NewFirestoreClient()
 
-const keyBitSize = 2048
-
-func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
+func GenerateChatKey(chatID string, participantRefs []*firestore.DocumentRef) {
 	ctx := context.Background()
 
 	reader := rand.Reader
 
-	chatKey, err := rsa.GenerateKey(reader, keyBitSize)
-	if err != nil {
-		logging.Error("error generating keys for chat %s: %s", chatID, err)
-		return
-	}
-
-	publicPem := pem.Block{
-		Type:  "RSA PUBLIC KEY",
-		Bytes: x509.MarshalPKCS1PublicKey(&chatKey.PublicKey),
-	}
-
-	var chatPublicKey strings.Builder
-	err = pem.Encode(&chatPublicKey, &publicPem)
-	if err != nil {
-		logging.Error("error creating chat public key string: %s", err)
-		return
-	}
-
-	chatPublicKeyData := ChatPublicKeyData{
-		ChatID:    chatID,
-		PublicKey: chatPublicKey.String(),
-	}
-
-	_, _, err = firestoreClient.Collection("publicKeys").Add(ctx, chatPublicKeyData)
-	if err != nil {
-		logging.Error("error storing public chatKey for chat %s: %s", chatID, err)
-		return
-	}
-
-	chatPrivateKeyBytes, err := x509.MarshalPKCS8PrivateKey(chatKey)
-	if err != nil {
-		logging.Error("error marshaling chat %s private key: %s", chatID, err)
-		return
-	}
-
 	chatAESKey, err := generateNewAESKey()
 	if err != nil {
 		logging.Error("error generating new AES key: %s", err)
-		return
-	}
-
-	encryptedChatPrivateKey, aesIV, err := encryptChatPrivateKey(chatAESKey, chatPrivateKeyBytes)
-	if err != nil {
-		logging.Error("error encrypting private key: %s", err)
 		return
 	}
 
@@ -94,10 +46,7 @@ func GenerateChatKeys(chatID string, participantRefs []*firestore.DocumentRef) {
 				ParticipantUID:             participantRef.ID,
 				DeviceToken:                participantDevicePublicKey.DeviceToken,
 				ChatID:                     chatID,
-				ChatPublicKey:              chatPublicKey.String(),
-				EncodedEncryptedPrivateKey: hex.EncodeToString(encryptedChatPrivateKey),
 				EncodedEncryptedAESKey:     hex.EncodeToString(encryptedChatAESKeyBytes),
-				EncodedAESIV:               hex.EncodeToString(aesIV),
 			}
 
 			_, _, err2 = firestoreClient.Collection("encryptedPrivateKeys").Add(ctx, chatParticipantPrivateKey)
@@ -162,47 +111,4 @@ func generateNewAESKey() ([]byte, error) {
 	}
 
 	return key, nil
-}
-
-func encryptChatPrivateKey(aesKey []byte, chatPrivateKeyBytes []byte) ([]byte, []byte, error) {
-	block, err := aes.NewCipher(aesKey)
-	if err != nil {
-		logging.Error(err.Error())
-		return nil, nil, err
-	}
-
-	paddedChatPrivateKeyBytes := pad(chatPrivateKeyBytes)
-	encryptedChatPrivateKeyBytes := make([]byte, len(paddedChatPrivateKeyBytes) + aes.BlockSize)
-
-	iv := encryptedChatPrivateKeyBytes[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		return nil, nil, err
-	}
-
-	//gcm, err := cipher.NewGCM(block)
-	//if err != nil {
-	//	logging.Error("error creating new gcm: %s", err)
-	//	return nil, nil, err
-	//}
-
-
-	nonce := make([]byte, 12)
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		logging.Error("error encrypting chat private key: %s", err)
-		return nil, nil, err
-	}
-
-	cfb := cipher.NewCBCEncrypter(block, iv)
-	cfb.CryptBlocks(encryptedChatPrivateKeyBytes[aes.BlockSize:], paddedChatPrivateKeyBytes)
-
-	//encryptedChatPrivateKeyBytes := gcm.Seal(nil, nonce, chatPrivateKeyBytes, nil)
-
-	return encryptedChatPrivateKeyBytes, iv, nil
-}
-
-func pad(aesKey []byte) []byte {
-	padLength := aes.BlockSize - len(aesKey) % aes.BlockSize
-	padBytes := bytes.Repeat([]byte{byte(padLength)}, padLength)
-
-	return append(aesKey, padBytes...)
 }
