@@ -35,9 +35,10 @@ func GenerateChatKey(chatID string) {
 		return
 	}
 
-	practitionerID, err := chatSnapshot.DataAt("practitioner.id")
+	practitionerRefData, err := chatSnapshot.DataAt("practitioner")
+	practitionerRef := practitionerRefData.(*firestore.DocumentRef)
 
-	practitionerPublicKeys, err2 := getParticipantDevicesPublicKeys(practitionerID.(string))
+	practitionerPublicKeys, err2 := getParticipantDevicesPublicKeys(practitionerRef.ID)
 	if err2 != nil {
 		logging.Error("fucked up")
 		return
@@ -47,7 +48,7 @@ func GenerateChatKey(chatID string) {
 
 	encryptedChatAESKeyBytes, err2 := rsa.EncryptOAEP(sha1.New(), reader, &practitionerPublicKey.PublicKey, chatAESKey, nil)
 	if err2 != nil {
-		logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, practitionerID, err2)
+		logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, practitionerRef.ID, err2)
 		return
 	}
 
