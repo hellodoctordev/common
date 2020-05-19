@@ -65,6 +65,10 @@ func GenerateChatKey(chatID string) {
 		logging.Error("fucked up")
 		return
 	}
+	
+	if len(patientPublicKeys) == 0 {
+		return
+	}
 
 	patientPublicKey := patientPublicKeys[0]
 
