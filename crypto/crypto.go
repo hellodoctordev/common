@@ -57,7 +57,7 @@ func GenerateChatKey(chatID string) {
 		Value: hex.EncodeToString(encryptedChatAESKeyBytes),
 	}})
 
-	patientRefData, err := chatSnapshot.DataAt("practitioner")
+	patientRefData, err := chatSnapshot.DataAt("patient")
 	patientRef := patientRefData.(*firestore.DocumentRef)
 
 	patientPublicKeys, err2 := getParticipantDevicesPublicKeys(patientRef.ID)
