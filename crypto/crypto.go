@@ -56,6 +56,28 @@ func GenerateChatKey(chatID string) {
 		Path:  "key",
 		Value: hex.EncodeToString(encryptedChatAESKeyBytes),
 	}})
+
+	patientRefData, err := chatSnapshot.DataAt("practitioner")
+	patientRef := patientRefData.(*firestore.DocumentRef)
+
+	patientPublicKeys, err2 := getParticipantDevicesPublicKeys(patientRef.ID)
+	if err2 != nil {
+		logging.Error("fucked up")
+		return
+	}
+
+	patientPublicKey := patientPublicKeys[0]
+
+	encryptedChatAESPatientKeyBytes, err2 := rsa.EncryptOAEP(sha1.New(), reader, &patientPublicKey.PublicKey, chatAESKey, nil)
+	if err2 != nil {
+		logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, patientRef.ID, err2)
+		return
+	}
+
+	_, _ = chatSnapshot.Ref.Update(ctx, []firestore.Update{{
+		Path:  "patientKey",
+		Value: hex.EncodeToString(encryptedChatAESPatientKeyBytes),
+	}})
 }
 
 func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKeys []DevicePublicKey, err error) {
