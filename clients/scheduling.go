@@ -62,6 +62,7 @@ type InternalUpdateEventRequest struct {
 	Start        *time.Time `json:"start"`
 	End          *time.Time `json:"end"`
 	Availability string     `json:"availability"`
+	Status       string     `json:"status"`
 }
 
 type InternalUpdateEventResponse struct {
