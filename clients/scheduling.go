@@ -88,3 +88,13 @@ func (client *SchedulingClient) InternalDeleteEvent(req InternalUpdateEventReque
 
 	return err
 }
+
+type InternalSyncGoogleEventsRequest struct {
+	UserUID string `json:"userUID"`
+}
+
+func (client *SchedulingClient) InternalSyncGoogleEvents(req InternalUpdateEventRequest) error {
+	_, err := client.Post("/scheduling/internal/sync/google", req)
+
+	return err
+}
