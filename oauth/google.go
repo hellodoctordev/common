@@ -119,8 +119,8 @@ func GetGoogleUserOAuthClient(userID string) (client *http.Client, err error) {
 			return
 		}
 	}
-
-	return oauth2.NewClient(ctx, oauthConfig.TokenSource(ctx, &oauthToken.Token)), nil
+	return oauthConfig.Client(ctx, &oauthToken.Token), nil
+	//return oauth2.NewClient(ctx, oauthConfig.TokenSource(ctx, &oauthToken.Token)), nil
 }
 
 func getUserOAuthConfig(userID string) (config *oauth2.Config) {
