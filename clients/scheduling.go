@@ -93,7 +93,7 @@ type InternalSyncGoogleEventsRequest struct {
 	UserUID string `json:"userUID"`
 }
 
-func (client *SchedulingClient) InternalSyncGoogleEvents(req InternalUpdateEventRequest) error {
+func (client *SchedulingClient) InternalSyncGoogleEvents(req InternalSyncGoogleEventsRequest) error {
 	_, err := client.Post("/scheduling/internal/sync/google", req)
 
 	return err
