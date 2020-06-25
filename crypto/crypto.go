@@ -21,14 +21,6 @@ var firestoreClient = firebase.NewFirestoreClient()
 func GenerateChatKey(chatID string) {
 	ctx := context.Background()
 
-	reader := rand.Reader
-
-	chatAESKey, err := generateNewAESKey()
-	if err != nil {
-		logging.Error("error generating new AES key: %s", err)
-		return
-	}
-
 	chatSnapshot, err := firestoreClient.Doc(fmt.Sprintf("chats/%s", chatID)).Get(ctx)
 	if err != nil {
 		logging.Error("couldn't get chat %s", chatID)
@@ -37,6 +29,20 @@ func GenerateChatKey(chatID string) {
 
 	practitionerRefData, err := chatSnapshot.DataAt("practitioner")
 	practitionerRef := practitionerRefData.(*firestore.DocumentRef)
+
+	reader := rand.Reader
+
+	var chatAESKey []byte
+
+	if practitionerRef.ID == "" {
+		chatAESKey = getDemoKey()
+	} else {
+		chatAESKey, err = generateNewAESKey()
+		if err != nil {
+			logging.Error("error generating new AES key: %s", err)
+			return
+		}
+	}
 
 	practitionerPublicKeys, err2 := getParticipantDevicesPublicKeys(practitionerRef.ID)
 	if err2 != nil {
@@ -82,6 +88,10 @@ func GenerateChatKey(chatID string) {
 		Path:  "patientKey",
 		Value: hex.EncodeToString(encryptedChatAESPatientKeyBytes),
 	}})
+}
+
+func getDemoKey() []byte {
+	return []byte("cec0f2ad51a3b727444d107cf7f71072")
 }
 
 func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKeys []DevicePublicKey, err error) {
