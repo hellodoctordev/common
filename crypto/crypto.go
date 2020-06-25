@@ -84,6 +84,7 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 		}
 
 		devicePublicKey := DevicePublicKey{
+			DeviceID:    participantDeviceSnapshot.Ref.ID,
 			DeviceToken: participantDeviceData.DeviceToken,
 			PublicKey:   participantDevicePublicKey,
 		}
@@ -112,7 +113,7 @@ func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.Documen
 		}
 
 		_, _ = chatRef.Update(ctx, []firestore.Update{{
-			Path:  fmt.Sprintf("key-%s", publicKey.DeviceToken),
+			Path:  fmt.Sprintf("device-key-%s", publicKey.DeviceID),
 			Value: hex.EncodeToString(encryptedChatAESKeyBytes),
 		}})
 	}
