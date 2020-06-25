@@ -32,7 +32,7 @@ func GenerateChatKey(chatID string) {
 
 	var chatAESKey []byte
 	if practitionerRef.ID == "BWi5tH6EynWdhkiGSR0dlvCEpO93" {
-		chatAESKey = getDemoAESKey()
+		chatAESKey = getDemoUserAESKey()
 	} else {
 		chatAESKey, err = generateNewAESKey()
 		if err != nil {
@@ -118,7 +118,7 @@ func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.Documen
 	}
 }
 
-func getDemoAESKey() []byte {
+func getDemoUserAESKey() []byte {
 	return []byte("cec0f2ad51a3b727444d107cf7f71072")
 }
 
