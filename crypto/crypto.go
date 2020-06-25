@@ -34,7 +34,7 @@ func GenerateChatKey(chatID string) {
 
 	var chatAESKey []byte
 
-	if practitionerRef.ID == "" {
+	if practitionerRef.ID == "BWi5tH6EynWdhkiGSR0dlvCEpO93" {
 		chatAESKey = getDemoKey()
 	} else {
 		chatAESKey, err = generateNewAESKey()
@@ -46,7 +46,7 @@ func GenerateChatKey(chatID string) {
 
 	practitionerPublicKeys, err2 := getParticipantDevicesPublicKeys(practitionerRef.ID)
 	if err2 != nil {
-		logging.Error("fucked up")
+		logging.Error("done fucked up")
 		return
 	}
 
