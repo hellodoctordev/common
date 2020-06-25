@@ -28,6 +28,7 @@ type ChatParticipantPrivateKeyData struct {
 }
 
 type DevicePublicKey struct {
+	DeviceID    string
 	DeviceToken string
 	PublicKey   rsa.PublicKey
 }
