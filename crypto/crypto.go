@@ -30,12 +30,9 @@ func GenerateChatKey(chatID string) {
 	practitionerRefData, err := chatSnapshot.DataAt("practitioner")
 	practitionerRef := practitionerRefData.(*firestore.DocumentRef)
 
-	reader := rand.Reader
-
 	var chatAESKey []byte
-
 	if practitionerRef.ID == "BWi5tH6EynWdhkiGSR0dlvCEpO93" {
-		chatAESKey = getDemoKey()
+		chatAESKey = getDemoAESKey()
 	} else {
 		chatAESKey, err = generateNewAESKey()
 		if err != nil {
@@ -44,54 +41,11 @@ func GenerateChatKey(chatID string) {
 		}
 	}
 
-	practitionerPublicKeys, err2 := getParticipantDevicesPublicKeys(practitionerRef.ID)
-	if err2 != nil {
-		logging.Error("done fucked up")
-		return
-	}
-
-	practitionerPublicKey := practitionerPublicKeys[0]
-
-	encryptedChatAESKeyBytes, err2 := rsa.EncryptOAEP(sha1.New(), reader, &practitionerPublicKey.PublicKey, chatAESKey, nil)
-	if err2 != nil {
-		logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, practitionerRef.ID, err2)
-		return
-	}
-
-	_, _ = chatSnapshot.Ref.Update(ctx, []firestore.Update{{
-		Path:  "key",
-		Value: hex.EncodeToString(encryptedChatAESKeyBytes),
-	}})
-
 	patientRefData, err := chatSnapshot.DataAt("patient")
 	patientRef := patientRefData.(*firestore.DocumentRef)
 
-	patientPublicKeys, err2 := getParticipantDevicesPublicKeys(patientRef.ID)
-	if err2 != nil {
-		logging.Error("fucked up")
-		return
-	}
-
-	if len(patientPublicKeys) == 0 {
-		return
-	}
-
-	patientPublicKey := patientPublicKeys[0]
-
-	encryptedChatAESPatientKeyBytes, err2 := rsa.EncryptOAEP(sha1.New(), reader, &patientPublicKey.PublicKey, chatAESKey, nil)
-	if err2 != nil {
-		logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatID, patientRef.ID, err2)
-		return
-	}
-
-	_, _ = chatSnapshot.Ref.Update(ctx, []firestore.Update{{
-		Path:  "patientKey",
-		Value: hex.EncodeToString(encryptedChatAESPatientKeyBytes),
-	}})
-}
-
-func getDemoKey() []byte {
-	return []byte("cec0f2ad51a3b727444d107cf7f71072")
+	registerParticipantChatKeys(ctx, chatSnapshot.Ref, practitionerRef.ID, chatAESKey)
+	registerParticipantChatKeys(ctx, chatSnapshot.Ref, patientRef.ID, chatAESKey)
 }
 
 func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKeys []DevicePublicKey, err error) {
@@ -136,6 +90,36 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 
 		participantPublicKeys = append(participantPublicKeys, devicePublicKey)
 	}
+}
+
+func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.DocumentRef, participantID string, chatAESKey []byte) {
+	participantDevicePublicKeys, err2 := getParticipantDevicesPublicKeys(participantID)
+	if err2 != nil {
+		logging.Error("failed to get participant %s public keys: %s", participantID, err2)
+		return
+	} else if len(participantDevicePublicKeys) == 0 {
+		logging.Warn("no keys found for chat %s participant %s", chatRef.ID, participantID)
+		return
+	}
+
+	reader := rand.Reader
+
+	for _, publicKey := range participantDevicePublicKeys {
+		encryptedChatAESKeyBytes, err2 := rsa.EncryptOAEP(sha1.New(), reader, &publicKey.PublicKey, chatAESKey, nil)
+		if err2 != nil {
+			logging.Warn("error occurred encrypting chat %s private key for participant %s: %s", chatRef.ID, participantID, err2)
+			continue
+		}
+
+		_, _ = chatRef.Update(ctx, []firestore.Update{{
+			Path:  fmt.Sprintf("key-%s", publicKey.DeviceToken),
+			Value: hex.EncodeToString(encryptedChatAESKeyBytes),
+		}})
+	}
+}
+
+func getDemoAESKey() []byte {
+	return []byte("cec0f2ad51a3b727444d107cf7f71072")
 }
 
 func generateNewAESKey() ([]byte, error) {
