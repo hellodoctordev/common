@@ -27,7 +27,7 @@ func Info(format string, v... interface{}) {
 }
 
 func Warn(format string, v... interface{}) {
-	printLog(WARN, format, v)
+	printLog(WARN, format, v...)
 }
 
 func Error(format string, v... interface{}) {
