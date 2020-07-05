@@ -19,11 +19,11 @@ func (a LogLevel) String() string {
 }
 
 func Debug(format string, v... interface{}) {
-	printLog(DEBUG, format, v)
+	printLog(DEBUG, format, v...)
 }
 
 func Info(format string, v... interface{}) {
-	printLog(INFO, format, v)
+	printLog(INFO, format, v...)
 }
 
 func Warn(format string, v... interface{}) {
@@ -31,7 +31,7 @@ func Warn(format string, v... interface{}) {
 }
 
 func Error(format string, v... interface{}) {
-	printLog(ERROR, format, v)
+	printLog(ERROR, format, v...)
 }
 
 func printLog(level LogLevel, format string, v... interface{}) {
