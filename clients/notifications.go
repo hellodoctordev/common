@@ -54,7 +54,7 @@ func (client *NotificationClient) ConsultationRequested(req ConsultationRequeste
 type VideoConsultationStartedRequest struct {
 	InitiatedByUserUID string `json:"initiatedByUserUID"`
 	ConsultationID     string `json:"consultationID"`
-	RoomName           string `json:"RoomName"`
+	RoomName           string `json:"roomName"`
 }
 
 func (client *NotificationClient) VideoConsultationStarted(initiatedByUserUID string, consultationID string, roomName string) (*http.Response, error) {
