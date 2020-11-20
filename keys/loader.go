@@ -6,16 +6,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"reflect"
 	"strings"
 )
 
-const (
-	keysBucket = "hellodoctor-staging-keys"
+var (
+	keysBucket = os.Getenv("KEYS_BUCKET")
 )
 
-func Load(keyType KeyType, env string) {
-	keyFileData, err := getKeyFileData(keyType, env)
+func Load(keyType KeyType) {
+	keyFileData, err := getKeyFileData(keyType)
 	if err != nil {
 		log.Printf("error occurred reading keyFileData for '%s': %s", keyType, err)
 		return
@@ -35,7 +36,7 @@ func Load(keyType KeyType, env string) {
 	}
 }
 
-func getKeyFileData(keyType KeyType, env string) (data []byte, err error) {
+func getKeyFileData(keyType KeyType) (data []byte, err error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
@@ -43,7 +44,7 @@ func getKeyFileData(keyType KeyType, env string) (data []byte, err error) {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	keyObjectName := fmt.Sprintf("%s.%s.keys", keyType.GetKeyFilePrefix(), env)
+	keyObjectName := fmt.Sprintf("%s.keys", keyType.GetKeyFilePrefix())
 
 	rc, err := client.Bucket(keysBucket).Object(keyObjectName).NewReader(ctx)
 	if err != nil {
