@@ -8,6 +8,7 @@ import (
 	"firebase.google.com/go/messaging"
 	"firebase.google.com/go/storage"
 	"log"
+	"os"
 )
 
 func NewFirestoreClient() *firestore.Client {
@@ -62,7 +63,7 @@ func NewCloudStorageClient() *storage.Client {
 	ctx := context.Background()
 
 	config := &firebase.Config{
-		StorageBucket: "hellodoctor-staging.appspot.com",
+		StorageBucket: os.Getenv("CLOUD_STORAGE_BUCKET"),
 	}
 
 	app, err := firebase.NewApp(ctx, config)

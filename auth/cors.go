@@ -19,6 +19,8 @@ func WithCORS(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		} else if origin == "http://api.stage.hellodoctor.com.mx" {
 			w.Header().Set("Access-Control-Allow-Origin", "api.stage.hellodoctor.com.mx")
+		} else if origin == "http://api.hellodoctor.com.mx" {
+			w.Header().Set("Access-Control-Allow-Origin", "api.hellodoctor.com.mx")
 		}
 
 		if r.Method == "OPTIONS" {
