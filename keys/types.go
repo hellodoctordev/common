@@ -57,3 +57,12 @@ type GoogleApiKey struct {
 func (k *GoogleApiKey) GetKeyFilePrefix() string {
 	return "google"
 }
+
+type StripeKey struct {
+	KeyType
+	SecretKey        	string
+}
+
+func (k *StripeKey) GetKeyFilePrefix() string {
+	return "stripe"
+}
