@@ -48,9 +48,12 @@ func Authenticated(next http.Handler) http.Handler {
 		}
 
 		r.Header.Set("X-User-UID", token.UID)
-		r.Header.Set("X-User-Role", token.Claims["role"].(string))
 
-		if (token.Claims["authorizedRemoteUserID"] != nil) {
+		if token.Claims["role"] != nil {
+			r.Header.Set("X-User-Role", token.Claims["role"].(string))
+		}
+
+		if token.Claims["authorizedRemoteUserID"] != nil {
 			remoteUserUID := token.Claims["authorizedRemoteUserID"].(string)
 			
 			r.Header.Set("X-Remote-User-UID", remoteUserUID)
