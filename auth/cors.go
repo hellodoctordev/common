@@ -11,6 +11,7 @@ func WithCORS(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept")
 
 		origin := r.Header.Get("Origin")
+		referer := r.Header.Get("Referer")
 
 		// FIXME Only allow localhost/ngrok.io in DEV deployment
 		if origin == "http://localhost:3000" {
@@ -21,7 +22,7 @@ func WithCORS(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Origin", "api.stage.hellodoctor.com.mx")
 		} else if origin == "http://api.hellodoctor.com.mx" {
 			w.Header().Set("Access-Control-Allow-Origin", "api.hellodoctor.com.mx")
-		} else if origin == "https://cast.hellodoctor.com.mx" {
+		} else if referer == "https://cast.hellodoctor.com.mx" {
 			w.Header().Set("Access-Control-Allow-Origin", "cast.hellodoctor.com.mx")
 		}
 
