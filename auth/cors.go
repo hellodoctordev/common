@@ -22,7 +22,7 @@ func WithCORS(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Origin", "api.stage.hellodoctor.com.mx")
 		} else if origin == "http://api.hellodoctor.com.mx" {
 			w.Header().Set("Access-Control-Allow-Origin", "api.hellodoctor.com.mx")
-		} else if referer == "https://cast.hellodoctor.com.mx" {
+		} else if origin == "https://cast.hellodoctor.com.mx" || referer == "https://cast.hellodoctor.com.mx" {
 			w.Header().Set("Access-Control-Allow-Origin", "cast.hellodoctor.com.mx")
 		}
 
