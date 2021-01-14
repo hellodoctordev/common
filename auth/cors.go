@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/hellodoctordev/common/utils"
 	"net/http"
 	"strings"
 )
@@ -12,17 +13,22 @@ func WithCORS(next http.Handler) http.Handler {
 
 		origin := r.Header.Get("Origin")
 
+		allowedOrigins := []string{
+			"https://hellodoctor-staging-cast.firebaseapp.com",
+			"http://api.stage.hellodoctor.com.mx",
+			"http://api.hellodoctor.com.mx",
+			"https://cast.hellodoctor.com.mx",
+		}
+
+		if utils.ContainsString(allowedOrigins, origin) {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		}
+
 		// FIXME Only allow localhost/ngrok.io in DEV deployment
 		if origin == "http://localhost:3000" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		} else if strings.HasSuffix(origin, "ngrok.io") {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
-		} else if origin == "http://api.stage.hellodoctor.com.mx" {
-			w.Header().Set("Access-Control-Allow-Origin", "api.stage.hellodoctor.com.mx")
-		} else if origin == "http://api.hellodoctor.com.mx" {
-			w.Header().Set("Access-Control-Allow-Origin", "api.hellodoctor.com.mx")
-		} else if origin == "https://cast.hellodoctor.com.mx" {
-			w.Header().Set("Access-Control-Allow-Origin", "https://cast.hellodoctor.com.mx")
 		}
 
 		if r.Method == "OPTIONS" {
