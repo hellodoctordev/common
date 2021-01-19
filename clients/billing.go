@@ -41,6 +41,12 @@ func (client *BillingClient) CreateAuthorizedCharge(consultationID, paymentMetho
 	return client.Post(fmt.Sprintf("/charges/consultations/%s/_authorize", consultationID), req)
 }
 
+type RequestConsultationCharge struct {
+
+}
+
 func (client *BillingClient) RequestConsultationChargeAuthorization(consultationID string) (*http.Response, error) {
-	return client.Post(fmt.Sprintf("/charges/consultations/%s/_request_authorization", consultationID), map[string]interface{}{})
+	req := RequestConsultationCharge{}
+
+	return client.Post(fmt.Sprintf("/charges/consultations/%s/_request_authorization", consultationID), req)
 }
