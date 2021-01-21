@@ -2,7 +2,6 @@ package clients
 
 import (
 	"cloud.google.com/go/firestore"
-	"github.com/hellodoctordev/common/fhir/resources"
 	"log"
 	"net/http"
 	"os"
@@ -31,13 +30,13 @@ func NewConsultationsClient() *ConsultationsClient {
 }
 
 type CreateConsultationRequest struct {
-	PatientUserUID      string             `json:"patientUserUID"`
-	PractitionerUserUID string             `json:"practitionerUserUID"`
-	ConsultationType    string             `json:"consultationType"`   // see consultations.types for enum values
-	ConsultationStatus  string             `json:"consultationStatus"` // see consultations.status for enum values
-	ScheduledStart      time.Time          `json:"requestedStart"`
-	ScheduledEnd        time.Time          `json:"requestedEnd"`
-	Reasons             []resources.Coding `json:"reasons"`
+	PatientUserUID      string    `json:"patientUserUID"`
+	PractitionerUserUID string    `json:"practitionerUserUID"`
+	ConsultationType    string    `json:"consultationType"`   // see consultations.types for enum values
+	ConsultationStatus  string    `json:"consultationStatus"` // see consultations.status for enum values
+	ScheduledStart      time.Time `json:"requestedStart"`
+	ScheduledEnd        time.Time `json:"requestedEnd"`
+	Reason              string    `json:"reason"`
 }
 
 type CreateConsultationResponse struct {
