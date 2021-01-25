@@ -7,7 +7,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha1"
 	"encoding/asn1"
-	"encoding/hex"
+	"encoding/base64"
 	"encoding/pem"
 	"fmt"
 	"github.com/hellodoctordev/common/firebase"
@@ -114,7 +114,7 @@ func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.Documen
 
 		_, _ = chatRef.Update(ctx, []firestore.Update{{
 			Path:  fmt.Sprintf("device-key-%s", publicKey.DeviceID),
-			Value: hex.EncodeToString(encryptedChatAESKeyBytes),
+			Value: base64.StdEncoding.EncodeToString(encryptedChatAESKeyBytes),
 		}})
 	}
 }
