@@ -124,7 +124,7 @@ func getDemoUserAESKey() []byte {
 }
 
 func generateNewAESKey() ([]byte, error) {
-	key := make([]byte, 32)
+	key := make([]byte, 24)
 
 	if _, err := io.ReadFull(rand.Reader, key); err != nil {
 		logging.Error(err.Error())
