@@ -74,7 +74,11 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 			continue
 		}
 
-		block, _ := pem.Decode([]byte(participantDeviceData.PublicKey))
+		block, pemDecodeErr := pem.Decode([]byte(participantDeviceData.PublicKey))
+		if pemDecodeErr != nil || block == nil {
+			logging.Warn("error occurred decoding participant %s device %s public key: %s", participantUID, participantDeviceSnapshot.Ref.ID, pemDecodeErr)
+			continue
+		}
 
 		var participantDevicePublicKey rsa.PublicKey
 		_, err2 = asn1.Unmarshal(block.Bytes, &participantDevicePublicKey)
