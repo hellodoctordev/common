@@ -74,9 +74,9 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 			continue
 		}
 
-		block, pemDecodeErr := pem.Decode([]byte(participantDeviceData.PublicKey))
-		if pemDecodeErr != nil || block == nil {
-			logging.Warn("error occurred decoding participant %s device %s public key: %s", participantUID, participantDeviceSnapshot.Ref.ID, pemDecodeErr)
+		block, _ := pem.Decode([]byte(participantDeviceData.PublicKey))
+		if block == nil {
+			logging.Warn("could not decode participant %s device %s public key", participantUID, participantDeviceSnapshot.Ref.ID)
 			continue
 		}
 
