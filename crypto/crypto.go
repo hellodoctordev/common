@@ -35,7 +35,8 @@ func GenerateChatKey(chatID string) {
 
 	participantsData, err := chatSnapshot.DataAt("participants")
 	if err == nil && participantsData != nil {
-		for _, participant := range participantsData.([]*firestore.DocumentRef) {
+		for _, participantData := range participantsData.([]interface{}) {
+			participant := participantData.(*firestore.DocumentRef)
 			registerParticipantChatKeys(ctx, chatSnapshot.Ref, participant.ID, chatAESKey)
 		}
 	} else {
