@@ -27,25 +27,27 @@ func GenerateChatKey(chatID string) {
 		return
 	}
 
-	practitionerRefData, err := chatSnapshot.DataAt("practitioner")
-	practitionerRef := practitionerRefData.(*firestore.DocumentRef)
-
-	var chatAESKey []byte
-	if practitionerRef.ID == "sJsUCMZYX6PezJejDmLAZjYqpu13" {
-		chatAESKey = getDemoUserAESKey()
-	} else {
-		chatAESKey, err = generateNewAESKey()
-		if err != nil {
-			logging.Error("error generating new AES key: %s", err)
-			return
-		}
+	chatAESKey, err := generateNewAESKey()
+	if err != nil {
+		logging.Error("error generating new AES key: %s", err)
+		return
 	}
 
-	patientRefData, err := chatSnapshot.DataAt("patient")
-	patientRef := patientRefData.(*firestore.DocumentRef)
+	participantsData, err := chatSnapshot.DataAt("participants")
+	if err == nil && participantsData != nil {
+		for _, participant := range participantsData.([]*firestore.DocumentRef) {
+			registerParticipantChatKeys(ctx, chatSnapshot.Ref, participant.ID, chatAESKey)
+		}
+	} else {
+		practitionerRefData, _ := chatSnapshot.DataAt("practitioner")
+		practitionerRef := practitionerRefData.(*firestore.DocumentRef)
 
-	registerParticipantChatKeys(ctx, chatSnapshot.Ref, practitionerRef.ID, chatAESKey)
-	registerParticipantChatKeys(ctx, chatSnapshot.Ref, patientRef.ID, chatAESKey)
+		patientRefData, _ := chatSnapshot.DataAt("patient")
+		patientRef := patientRefData.(*firestore.DocumentRef)
+
+		registerParticipantChatKeys(ctx, chatSnapshot.Ref, practitionerRef.ID, chatAESKey)
+		registerParticipantChatKeys(ctx, chatSnapshot.Ref, patientRef.ID, chatAESKey)
+	}
 }
 
 func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKeys []DevicePublicKey, err error) {

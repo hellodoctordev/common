@@ -53,6 +53,10 @@ func Authenticated(next http.Handler) http.Handler {
 			r.Header.Set("X-User-Role", token.Claims["role"].(string))
 		}
 
+		if token.Claims["groupID"] != nil {
+			r.Header.Set("X-User-Group-ID", token.Claims["groupID"].(string))
+		}
+
 		if token.Claims["authorizedRemoteUserID"] != nil {
 			remoteUserUID := token.Claims["authorizedRemoteUserID"].(string)
 			
