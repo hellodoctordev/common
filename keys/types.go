@@ -49,20 +49,3 @@ type GoogleOAuthKey struct {
 func (k *GoogleOAuthKey) GetKeyFilePrefix() string {
 	return "google-oauth"
 }
-
-type GoogleApiKey struct {
-	GoogleApiServerKey string
-}
-
-func (k *GoogleApiKey) GetKeyFilePrefix() string {
-	return "google"
-}
-
-type StripeKey struct {
-	KeyType
-	SecretKey        	string
-}
-
-func (k *StripeKey) GetKeyFilePrefix() string {
-	return "stripe"
-}
