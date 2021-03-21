@@ -37,6 +37,7 @@ type CreateConsultationRequest struct {
 	ScheduledStart      time.Time `json:"requestedStart"`
 	ScheduledEnd        time.Time `json:"requestedEnd"`
 	Reason              string    `json:"reason"`
+	RequestMode         string    `json:"requestMode"`
 }
 
 type CreateConsultationResponse struct {
