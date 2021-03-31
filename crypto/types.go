@@ -9,6 +9,7 @@ type UserDeviceData struct {
 	DeviceToken    string                 `firestore:"token"`
 	PublicKey      string                 `firestore:"publicKey"`
 	IsMasterDevice bool                   `firestore:"isMasterDevice,omitempty"`
+	IsVerified     bool                   `firestore:"isVerified,omitempty"`
 	AuthorizedBy   *firestore.DocumentRef `firestore:"authorizedBy,omitempty"`
 }
 
