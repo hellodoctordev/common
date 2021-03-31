@@ -73,7 +73,7 @@ func getParticipantDevicesPublicKeys(participantUID string) (participantPublicKe
 			continue
 		}
 
-		if !participantDeviceData.IsMasterDevice && participantDeviceData.AuthorizedBy == nil {
+		if !participantDeviceData.IsMasterDevice && participantDeviceData.AuthorizedBy == nil && !participantDeviceData.IsVerified {
 			continue
 		}
 
