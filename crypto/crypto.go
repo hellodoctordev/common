@@ -124,6 +124,14 @@ func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.Documen
 			Value: base64.StdEncoding.EncodeToString(encryptedChatAESKeyBytes),
 		}})
 	}
+
+	userChatRef := firestoreClient.Collection("users").Doc(participantID).Collection("chats").Doc(chatRef.ID)
+	userChatData := map[string]interface{}{
+		"chat": chatRef,
+		"key": base64.StdEncoding.EncodeToString(chatAESKey),
+	}
+
+	userChatRef.Set(ctx, userChatData)
 }
 
 func getDemoUserAESKey() []byte {
