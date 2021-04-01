@@ -106,7 +106,16 @@ func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.Documen
 		logging.Error("failed to get participant %s public keys: %s", participantID, err2)
 		return
 	} else if len(participantDevicePublicKeys) == 0 {
-		logging.Warn("no keys found for chat %s participant %s", chatRef.ID, participantID)
+		logging.Info("no keys found for chat %s participant %s", chatRef.ID, participantID)
+
+		userChatRef := firestoreClient.Collection("users").Doc(participantID).Collection("chats").Doc(chatRef.ID)
+		userChatData := map[string]interface{}{
+			"chat": chatRef,
+			"key": base64.StdEncoding.EncodeToString(chatAESKey),
+		}
+
+		userChatRef.Set(ctx, userChatData)
+
 		return
 	}
 
@@ -124,14 +133,6 @@ func registerParticipantChatKeys(ctx context.Context, chatRef *firestore.Documen
 			Value: base64.StdEncoding.EncodeToString(encryptedChatAESKeyBytes),
 		}})
 	}
-
-	userChatRef := firestoreClient.Collection("users").Doc(participantID).Collection("chats").Doc(chatRef.ID)
-	userChatData := map[string]interface{}{
-		"chat": chatRef,
-		"key": base64.StdEncoding.EncodeToString(chatAESKey),
-	}
-
-	userChatRef.Set(ctx, userChatData)
 }
 
 func getDemoUserAESKey() []byte {
