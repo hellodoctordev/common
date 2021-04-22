@@ -41,6 +41,7 @@ type InternalCreateNewEventRequest struct {
 	Status           string                   `json:"status"`
 	Consultation     *firestore.DocumentRef   `json:"consultationRef"`
 	ConsultationType string                   `json:"consultationType"`
+	Source           string                   `json:"source"`
 }
 
 type InternalCreateNewEventResponse struct {
