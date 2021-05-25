@@ -8,6 +8,7 @@ import (
 	"github.com/hellodoctordev/common/keys"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
@@ -51,6 +52,10 @@ func Authenticated(next http.Handler) http.Handler {
 
 		if token.Claims["role"] != nil {
 			r.Header.Set("X-User-Role", token.Claims["role"].(string))
+		}
+
+		if scopesArray, ok := token.Claims["scopes"].([]string); ok {
+			r.Header.Set("X-User-Scopes", strings.Join(scopesArray, ","))
 		}
 
 		if token.Claims["groupID"] != nil {
