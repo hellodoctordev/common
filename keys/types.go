@@ -38,6 +38,15 @@ func (k *AdminKey) GetKeyFilePrefix() string {
 	return "admin"
 }
 
+type GoogleApiKey struct {
+	KeyType
+	ServerKey string
+}
+
+func (k *GoogleApiKey) GetKeyFilePrefix() string {
+	return "google-api"
+}
+
 type GoogleOAuthKey struct {
 	KeyType
 	DoctorClientID		string
