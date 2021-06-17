@@ -27,7 +27,7 @@ func ReadBody(body io.Reader, o interface{}) (err error) {
 func WriteJSONResponse(w http.ResponseWriter, response interface{}) {
 	js, err := json.Marshal(response)
 	if err != nil {
-		logging.Error("could not marshal CreateChatConsultationResponse: %s", err)
+		logging.Error("could not marshal: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
