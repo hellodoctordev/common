@@ -1,3 +1,6 @@
+# Go files
+go.sum
+
 # Mac OS X files
 .DS_Store
 
