@@ -4,7 +4,6 @@ import (
 	"cloud.google.com/go/firestore"
 	"net/http"
 	"os"
-	"time"
 )
 
 type NotificationClient struct {
@@ -38,17 +37,20 @@ func (client *NotificationClient) ChatMessageSent(req ChatMessageSentRequest) (*
 	return client.Post("/notifications/chat-message-sent", req)
 }
 
-type ConsultationRequestedRequest struct {
-	Chat             *firestore.DocumentRef `json:"chatRef"`
-	Consultation     *firestore.DocumentRef `json:"consultationRef"`
-	PatientUser      *firestore.DocumentRef `json:"patientUserRef"`
-	ConsultationType string                 `json:"consultationType"`
-	RequestedStart   time.Time              `json:"requestedStart"`
-	RequestedEnd     time.Time              `json:"requestedEnd"`
+type ConsultationNotificationPayload struct {
+	ConsultationID string `json:"consultationID"`
 }
 
-func (client *NotificationClient) ConsultationRequested(req ConsultationRequestedRequest) (*http.Response, error) {
+func (client *NotificationClient) ConsultationRequested(req ConsultationNotificationPayload) (*http.Response, error) {
 	return client.Post("/notifications/consultation-requested", req)
+}
+
+func (client *NotificationClient) ConsultationRescheduled(req ConsultationNotificationPayload) (*http.Response, error) {
+	return client.Post("/notifications/consultation-rescheduled", req)
+}
+
+func (client *NotificationClient) ConsultationCancelled(req ConsultationNotificationPayload) (*http.Response, error) {
+	return client.Post("/notifications/consultation-cancelled", req)
 }
 
 type VideoConsultationStartedRequest struct {
