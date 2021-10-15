@@ -41,15 +41,27 @@ type ConsultationNotificationPayload struct {
 	ConsultationID string `json:"consultationID"`
 }
 
-func (client *NotificationClient) ConsultationRequested(req ConsultationNotificationPayload) (*http.Response, error) {
+func (client *NotificationClient) ConsultationRequested(consultationID string) (*http.Response, error) {
+	req := ConsultationNotificationPayload{
+		ConsultationID: consultationID,
+	}
+
 	return client.Post("/notifications/consultation-requested", req)
 }
 
-func (client *NotificationClient) ConsultationRescheduled(req ConsultationNotificationPayload) (*http.Response, error) {
+func (client *NotificationClient) ConsultationRescheduled(consultationID string) (*http.Response, error) {
+	req := ConsultationNotificationPayload{
+		ConsultationID: consultationID,
+	}
+
 	return client.Post("/notifications/consultation-rescheduled", req)
 }
 
-func (client *NotificationClient) ConsultationCancelled(req ConsultationNotificationPayload) (*http.Response, error) {
+func (client *NotificationClient) ConsultationCancelled(consultationID string) (*http.Response, error) {
+	req := ConsultationNotificationPayload{
+		ConsultationID: consultationID,
+	}
+
 	return client.Post("/notifications/consultation-cancelled", req)
 }
 
