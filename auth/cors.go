@@ -15,11 +15,13 @@ func WithCORS(next http.Handler) http.Handler {
 
 		allowedOrigins := []string{
 			"https://hellodoctor-staging-cast.firebaseapp.com",
+			"https://hellodoctor-staging-patient.firebaseapp.com",
 			"http://api.stage.hellodoctor.com.mx",
 			"http://api.hellodoctor.com.mx",
 			"https://cast.hellodoctor.com.mx",
+			"https://patient.hellodoctor.com.mx",
 		}
-
+		
 		if utils.ContainsString(allowedOrigins, origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		}
