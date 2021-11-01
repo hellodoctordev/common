@@ -41,7 +41,7 @@ func Authenticated(next http.Handler) http.Handler {
 			log.Fatalf("error getting Auth client: %v\n", err)
 		}
 
-		token, err := client.VerifyIDToken(ctx, r.Header.Get("Authorization"))
+		token, err := client.VerifyIDToken(ctx, getRequestAuthorizationToken(r))
 		if err != nil {
 			log.Printf("error verifying ID token: %v\n", err)
 			w.WriteHeader(http.StatusUnauthorized)
@@ -144,4 +144,14 @@ func AuthenticatedAdmin(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getRequestAuthorizationToken(r *http.Request) string {
+	authorizationHeader := r.Header.Get("Authorization")
+
+	if strings.Contains(authorizationHeader, "Bearer") {
+		return strings.Split(authorizationHeader, " ")[1]
+	} else {
+		return authorizationHeader
+	}
 }
