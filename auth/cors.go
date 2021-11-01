@@ -8,7 +8,7 @@ import (
 
 func WithCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST, GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept")
 
 		origin := r.Header.Get("Origin")
@@ -21,7 +21,7 @@ func WithCORS(next http.Handler) http.Handler {
 			"https://cast.hellodoctor.com.mx",
 			"https://patient.hellodoctor.com.mx",
 		}
-		
+
 		if utils.ContainsString(allowedOrigins, origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		}
