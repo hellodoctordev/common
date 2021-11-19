@@ -44,14 +44,14 @@ func (client *MessagingClient) CreateChat(patientUID, practitionerUserUID string
 	return client.Post("/messaging/internal/chats", req)
 }
 
-type SendAutomatedChatMessageRequest struct {
+type InternalSendChatMessageRequest struct {
 	ConsultationID string `json:"consultationID"`
 	MessageContent string `json:"messageContent"`
 	ContentType    string `json:"contentType"`
 }
 
-func (client *MessagingClient) SendAutomatedChatMessage(chatID, consultationID, messageContent, contentType, messageType string) (*http.Response, error) {
-	req := SendAutomatedChatMessageRequest{
+func (client *MessagingClient) InternalSendChatMessage(chatID, consultationID, messageContent, contentType, messageType string) (*http.Response, error) {
+	req := InternalSendChatMessageRequest{
 		ConsultationID: consultationID,
 		MessageContent: messageContent,
 		ContentType:    contentType,
