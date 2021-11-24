@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hellodoctordev/common/keys"
 	"log"
 	"net/http"
+
+	"github.com/hellodoctordev/common/keys"
 )
 
 const (
@@ -16,6 +17,10 @@ const (
 type HttpServiceClient struct {
 	*http.Client
 	ServiceHost string
+}
+
+func (client *HttpServiceClient) Get(path string) (resp *http.Response, err error) {
+	return client.doRequest("GET", path, nil)
 }
 
 func (client *HttpServiceClient) Post(path, body interface{}) (resp *http.Response, err error) {
