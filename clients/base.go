@@ -38,13 +38,20 @@ func (client *HttpServiceClient) Delete(path, body interface{}) (resp *http.Resp
 func (client *HttpServiceClient) doRequest(method string, path, body interface{}) (resp *http.Response, err error) {
 	url := fmt.Sprintf("%s%s", client.ServiceHost, path)
 
-	reqBody, err := json.Marshal(body)
-	if err != nil {
-		log.Printf("error occurred marshalling interface: %s", err)
-		return
+	var req *http.Request
+
+	if body != nil {
+		reqBody, marshallErr := json.Marshal(body)
+		if err != nil {
+			log.Printf("error occurred marshalling interface: %s", marshallErr)
+			return nil, marshallErr
+		}
+
+		req, err = http.NewRequest(method, url, bytes.NewBuffer(reqBody))
+	} else {
+		req, err = http.NewRequest(method, url, nil)
 	}
 
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		log.Printf("error occurred creating new request: %s", err)
 		return
