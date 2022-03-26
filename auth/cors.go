@@ -27,7 +27,7 @@ func WithCORS(next http.Handler) http.Handler {
 		}
 
 		// FIXME Only allow localhost/ngrok.io in DEV deployment
-		if origin == "http://localhost:3000" {
+		if origin == "http://localhost:3000" || origin == "http://192.168.100.26:3000" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		} else if strings.HasSuffix(origin, "ngrok.io") {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
