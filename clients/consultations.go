@@ -1,11 +1,12 @@
 package clients
 
 import (
-	"cloud.google.com/go/firestore"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"cloud.google.com/go/firestore"
 )
 
 type ConsultationsClient struct {
@@ -62,4 +63,15 @@ type StartChatConsultationResponse struct {
 
 func (client *ConsultationsClient) StartChatConsultation(req StartChatConsultationRequest) (*http.Response, error) {
 	return client.Post("/consultations/internal/consultations/start-chat", req)
+}
+
+type EmitConsultationEventRequest struct {
+	ConsultationID string `json:"consultationID"`
+	ActorID        string `json:"actorID"`
+	Type           string `json:"type"`
+	Value          string `json:"value"`
+}
+
+func (client *ConsultationsClient) EmitConsultationEvent(req EmitConsultationEventRequest) (*http.Response, error) {
+	return client.Post("/consultations/internal/events", req)
 }
