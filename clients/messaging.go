@@ -48,13 +48,15 @@ type InternalSendChatMessageRequest struct {
 	SenderID       string `json:"senderID"`
 	MessageContent string `json:"messageContent"`
 	ContentType    string `json:"contentType"`
+	MessageType    string `json:"messageType"`
 }
 
-func (client *MessagingClient) InternalSendChatMessage(chatID, senderID, messageContent, contentType string) (*http.Response, error) {
+func (client *MessagingClient) InternalSendChatMessage(chatID, senderID, messageContent, contentType, messageType string) (*http.Response, error) {
 	req := InternalSendChatMessageRequest{
 		SenderID:       senderID,
 		MessageContent: messageContent,
 		ContentType:    contentType,
+		MessageType:    messageType,
 	}
 
 	return client.Post(fmt.Sprintf("/messaging/internal/chats/%s", chatID), req)
