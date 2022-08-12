@@ -65,6 +65,14 @@ func (client *NotificationClient) ConsultationCancelled(consultationID string) (
 	return client.Post("/notifications/consultation-cancelled", req)
 }
 
+func (client *NotificationClient) ConsultationCompleted(consultationID string) (*http.Response, error) {
+	req := ConsultationNotificationPayload{
+		ConsultationID: consultationID,
+	}
+
+	return client.Post("/notifications/consultation-completed", req)
+}
+
 type VideoConsultationStartedRequest struct {
 	InitiatedByUserUID string `json:"initiatedByUserUID"`
 	ConsultationID     string `json:"consultationID"`
