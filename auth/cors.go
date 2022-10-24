@@ -20,6 +20,7 @@ func WithCORS(next http.Handler) http.Handler {
 			"http://api.hellodoctor.com.mx",
 			"https://cast.hellodoctor.com.mx",
 			"https://patient.hellodoctor.com.mx",
+			"https://hellodoctor-live-patient.web.app",
 		}
 
 		if utils.ContainsString(allowedOrigins, origin) {
