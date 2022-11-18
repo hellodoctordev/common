@@ -18,7 +18,7 @@ func WithCORS(next http.Handler) http.Handler {
 			"https://hellodoctor-staging-patient.firebaseapp.com",
 			"http://api.stage.hellodoctor.com.mx",
 			"http://api.hellodoctor.com.mx",
-			"https://app.hellodoctor.com.mx",
+			"https://app.hellodoctor.mx",
 			"https://cast.hellodoctor.com.mx",
 			"https://patient.hellodoctor.com.mx",
 			"https://hellodoctor-live-patient.web.app",
