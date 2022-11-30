@@ -16,6 +16,7 @@ func WithCORS(next http.Handler) http.Handler {
 		allowedOrigins := []string{
 			"https://hellodoctor-staging-cast.firebaseapp.com",
 			"https://hellodoctor-staging-patient.firebaseapp.com",
+			"https://hellodoctor-staging-concierge.web.app",
 			"http://api.stage.hellodoctor.com.mx",
 			"http://api.hellodoctor.com.mx",
 			"https://app.hellodoctor.mx",
