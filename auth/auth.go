@@ -52,24 +52,24 @@ func Authenticated(next http.Handler, optional bool) http.Handler {
 			return
 		} else if err == nil {
 			r.Header.Set("X-User-ID", token.UID)
-		}
 
-		if token.Claims["role"] != nil {
-			r.Header.Set("X-User-Role", token.Claims["role"].(string))
-		}
+			if token.Claims["role"] != nil {
+				r.Header.Set("X-User-Role", token.Claims["role"].(string))
+			}
 
-		if scopesArray, ok := token.Claims["scopes"].([]string); ok {
-			r.Header.Set("X-User-Scopes", strings.Join(scopesArray, ","))
-		}
+			if scopesArray, ok := token.Claims["scopes"].([]string); ok {
+				r.Header.Set("X-User-Scopes", strings.Join(scopesArray, ","))
+			}
 
-		if token.Claims["groupID"] != nil {
-			r.Header.Set("X-User-Group-ID", token.Claims["groupID"].(string))
-		}
+			if token.Claims["groupID"] != nil {
+				r.Header.Set("X-User-Group-ID", token.Claims["groupID"].(string))
+			}
 
-		if token.Claims["authorizedRemoteUserID"] != nil {
-			remoteUserUID := token.Claims["authorizedRemoteUserID"].(string)
+			if token.Claims["authorizedRemoteUserID"] != nil {
+				remoteUserUID := token.Claims["authorizedRemoteUserID"].(string)
 
-			r.Header.Set("X-Remote-User-ID", remoteUserUID)
+				r.Header.Set("X-Remote-User-ID", remoteUserUID)
+			}
 		}
 
 		next.ServeHTTP(w, r)
