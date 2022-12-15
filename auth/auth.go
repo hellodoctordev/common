@@ -50,9 +50,9 @@ func Authenticated(next http.Handler, optional bool) http.Handler {
 			log.Printf("error verifying ID token: %v\n", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
+		} else if err == nil {
+			r.Header.Set("X-User-ID", token.UID)
 		}
-
-		r.Header.Set("X-User-ID", token.UID)
 
 		if token.Claims["role"] != nil {
 			r.Header.Set("X-User-Role", token.Claims["role"].(string))
