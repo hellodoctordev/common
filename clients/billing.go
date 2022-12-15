@@ -26,7 +26,7 @@ func NewBillingClient() *BillingClient {
 }
 
 type CreateAuthorizedChargeRequest struct {
-	PaymentMethodID      string `json:"paymentMethodID"`
+	PaymentMethodID string `json:"paymentMethodID"`
 }
 
 type CreateAuthorizedChargeResponse struct {
@@ -35,14 +35,17 @@ type CreateAuthorizedChargeResponse struct {
 
 func (client *BillingClient) CreateAuthorizedCharge(consultationID, paymentMethodID string) (*http.Response, error) {
 	req := CreateAuthorizedChargeRequest{
-		PaymentMethodID:paymentMethodID,
+		PaymentMethodID: paymentMethodID,
 	}
 
 	return client.Post(fmt.Sprintf("/charges/consultations/%s/_authorize", consultationID), req)
 }
 
-type RequestConsultationCharge struct {
+func (client *BillingClient) CancelAuthorizedCharge(consultationID string) (*http.Response, error) {
+	return client.Post(fmt.Sprintf("/charges/consultations/%s/_cancel", consultationID), nil)
+}
 
+type RequestConsultationCharge struct {
 }
 
 func (client *BillingClient) RequestConsultationChargeAuthorization(consultationID string) (*http.Response, error) {
