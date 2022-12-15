@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -49,6 +50,10 @@ type CreateConsultationResponse struct {
 
 func (client *ConsultationsClient) CreateConsultation(req CreateConsultationRequest) (*http.Response, error) {
 	return client.Post("/consultations/internal/consultations", req)
+}
+
+func (client *ConsultationsClient) CancelConsultation(consultationID string) (*http.Response, error) {
+	return client.Post(fmt.Sprintf("/consultations/internal/consultations/%s/_cancel", consultationID), nil)
 }
 
 type StartChatConsultationRequest struct {
