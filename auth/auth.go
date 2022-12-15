@@ -12,11 +12,15 @@ import (
 )
 
 func WithAuth(handlerFunc http.HandlerFunc) http.Handler {
-	return Authenticated(handlerFunc)
+	return Authenticated(handlerFunc, false)
 }
 
-func WithAuthRoles(handlerFunc http.HandlerFunc, roles... string) http.Handler {
-	return Authenticated(WithRole(handlerFunc, roles...))
+func WithOptionalAuth(handlerFunc http.HandlerFunc) http.Handler {
+	return Authenticated(handlerFunc, true)
+}
+
+func WithAuthRoles(handlerFunc http.HandlerFunc, roles ...string) http.Handler {
+	return Authenticated(WithRole(handlerFunc, roles...), false)
 }
 
 func WithInternalAuth(handlerFunc http.HandlerFunc) http.Handler {
@@ -27,7 +31,7 @@ func WithAdminAuth(handlerFunc http.HandlerFunc) http.Handler {
 	return AuthenticatedAdmin(handlerFunc)
 }
 
-func Authenticated(next http.Handler) http.Handler {
+func Authenticated(next http.Handler, optional bool) http.Handler {
 	app, err := firebase.NewApp(context.Background(), nil)
 	if err != nil {
 		log.Fatalf("error initializing app: %v\n", err)
@@ -42,7 +46,7 @@ func Authenticated(next http.Handler) http.Handler {
 		}
 
 		token, err := client.VerifyIDToken(ctx, getRequestAuthorizationToken(r))
-		if err != nil {
+		if err != nil && !optional {
 			log.Printf("error verifying ID token: %v\n", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -64,7 +68,7 @@ func Authenticated(next http.Handler) http.Handler {
 
 		if token.Claims["authorizedRemoteUserID"] != nil {
 			remoteUserUID := token.Claims["authorizedRemoteUserID"].(string)
-			
+
 			r.Header.Set("X-Remote-User-ID", remoteUserUID)
 		}
 
@@ -72,7 +76,7 @@ func Authenticated(next http.Handler) http.Handler {
 	})
 }
 
-func WithRole(next http.Handler, roles... string) http.Handler {
+func WithRole(next http.Handler, roles ...string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestRole := r.Header.Get("X-User-Role")
 
