@@ -32,16 +32,16 @@ func NewConsultationsClient() *ConsultationsClient {
 }
 
 type CreateConsultationRequest struct {
-	PatientUserUID      string                 `json:"patientUserUID"`
-	PractitionerUserUID string                 `json:"practitionerUserUID"`
-	ConsultationType    string                 `json:"consultationType"`   // see consultations.types for enum values
-	ConsultationStatus  string                 `json:"consultationStatus"` // see consultations.status for enum values
-	ScheduledStart      time.Time              `json:"requestedStart"`
-	ScheduledEnd        time.Time              `json:"requestedEnd"`
-	Reason              string                 `json:"reason"`
-	RequestMode         string                 `json:"requestMode"`
-	Specialty           string                 `json:"specialty"`
-	Forms               map[string]interface{} `json:"forms"`
+	PatientUserUID      string        `json:"patientUserUID"`
+	PractitionerUserUID string        `json:"practitionerUserUID"`
+	ConsultationType    string        `json:"consultationType"`   // see consultations.types for enum values
+	ConsultationStatus  string        `json:"consultationStatus"` // see consultations.status for enum values
+	ScheduledStart      time.Time     `json:"requestedStart"`
+	ScheduledEnd        time.Time     `json:"requestedEnd"`
+	Reason              string        `json:"reason"`
+	RequestMode         string        `json:"requestMode"`
+	Specialty           string        `json:"specialty"`
+	Forms               []interface{} `json:"forms"`
 }
 
 type CreateConsultationResponse struct {
