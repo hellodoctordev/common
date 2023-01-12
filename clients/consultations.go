@@ -42,6 +42,7 @@ type CreateConsultationRequest struct {
 	RequestMode         string        `json:"requestMode"`
 	Specialty           string        `json:"specialty"`
 	Forms               []interface{} `json:"forms"`
+	PreferredLanguage   string        `json:"preferredLanguage"`
 }
 
 type CreateConsultationResponse struct {
