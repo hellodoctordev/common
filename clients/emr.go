@@ -28,10 +28,18 @@ func NewEMRServiceClient() *EMRServiceClient {
 }
 
 type CreateConsultationIntakeFormRequest struct {
-	UserID         string `json:"userID"`
 	ConsultationID string `json:"consultationID"`
 }
 
-func (client *EMRServiceClient) CreateConsultationIntakeForm(req CreateConsultationIntakeFormRequest) (*http.Response, error) {
-	return client.Post("/forms", req)
+func (client *EMRServiceClient) CreateConsultationIntakeForm(userID, consultationID string) (*http.Response, error) {
+	header := Header{
+		Key:   "X-On-Behalf-Of",
+		Value: userID,
+	}
+
+	req := CreateConsultationIntakeFormRequest{
+		ConsultationID: consultationID,
+	}
+
+	return client.Post("/forms", req, header)
 }
