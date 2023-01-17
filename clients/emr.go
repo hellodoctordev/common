@@ -32,6 +32,6 @@ type CreateConsultationIntakeFormRequest struct {
 	ConsultationID string `json:"consultationID"`
 }
 
-func (client *ConsultationsClient) CreateUserAssessment(req CreateConsultationIntakeFormRequest) (*http.Response, error) {
-	return client.Post("/consultations/internal/consultations", req)
+func (client *EMRServiceClient) CreateConsultationIntakeForm(req CreateConsultationIntakeFormRequest) (*http.Response, error) {
+	return client.Post("/forms", req)
 }
