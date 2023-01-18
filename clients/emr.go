@@ -43,3 +43,22 @@ func (client *EMRServiceClient) CreateConsultationIntakeForm(userID, consultatio
 
 	return client.Post("/forms", req, header)
 }
+
+type CreateUserDiagnosisRequest struct {
+	ConsultationID string                 `json:"consultationID"`
+	Diagnosis      map[string]interface{} `json:"diagnosis"`
+}
+
+func (client *EMRServiceClient) CreateUserDiagnosis(userID, consultationID string, diagnosis map[string]interface{}) (*http.Response, error) {
+	header := Header{
+		Key:   "X-On-Behalf-Of",
+		Value: userID,
+	}
+
+	req := CreateUserDiagnosisRequest{
+		ConsultationID: consultationID,
+		Diagnosis:      diagnosis,
+	}
+
+	return client.Post("/diagnoses", req, header)
+}
