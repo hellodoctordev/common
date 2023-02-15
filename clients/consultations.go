@@ -49,6 +49,7 @@ type CreateConsultationRequest struct {
 type CreateConsultationResponse struct {
 	Chat         *firestore.DocumentRef `json:"chatRef"`
 	Consultation *firestore.DocumentRef `json:"consultationRef"`
+	ErrorCode    string                 `json:"errorCode"`
 }
 
 func (client *ConsultationsClient) CreateConsultation(req CreateConsultationRequest) (*http.Response, error) {
