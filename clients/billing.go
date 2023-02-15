@@ -28,6 +28,7 @@ func NewBillingClient() *BillingClient {
 
 type CreateAuthorizedChargeRequest struct {
 	PatientID       string     `json:"patientID"`
+	Amount          int64      `json:"amount"`
 	PaymentMethodID string     `json:"paymentMethodID"`
 	ConsultationID  string     `json:"consultationID"`
 	PractitionerID  string     `json:"practitionerID"`
