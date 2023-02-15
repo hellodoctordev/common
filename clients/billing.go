@@ -40,6 +40,7 @@ type CreateAuthorizedChargeRequest struct {
 type CreateAuthorizedChargeResponse struct {
 	AuthorizedChargeID string `json:"authorizedChargeID"`
 	PaymentMethodType  string `json:"paymentMethodType"`
+	ErrorCode          string `json:"errorCode"`
 }
 
 func (client *BillingClient) CreateAuthorizedCharge(req CreateAuthorizedChargeRequest) (*http.Response, error) {
