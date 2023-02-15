@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
 type BillingClient struct {
@@ -26,19 +27,22 @@ func NewBillingClient() *BillingClient {
 }
 
 type CreateAuthorizedChargeRequest struct {
-	PaymentMethodID string `json:"paymentMethodID"`
+	PatientID       string     `json:"patientID"`
+	PaymentMethodID string     `json:"paymentMethodID"`
+	ConsultationID  string     `json:"consultationID"`
+	PractitionerID  string     `json:"practitionerID"`
+	CreateHold      bool       `json:"createHold"`
+	Service         string     `json:"service"`
+	ServiceTime     *time.Time `json:"serviceTime"`
 }
 
 type CreateAuthorizedChargeResponse struct {
-	PaymentIntentID string `json:"paymentIntentID"`
+	AuthorizedChargeID string `json:"authorizedChargeID"`
+	PaymentMethodType  string `json:"paymentMethodType"`
 }
 
-func (client *BillingClient) CreateAuthorizedCharge(consultationID, paymentMethodID string) (*http.Response, error) {
-	req := CreateAuthorizedChargeRequest{
-		PaymentMethodID: paymentMethodID,
-	}
-
-	return client.Post(fmt.Sprintf("/charges/consultations/%s/_authorize", consultationID), req)
+func (client *BillingClient) CreateAuthorizedCharge(req CreateAuthorizedChargeRequest) (*http.Response, error) {
+	return client.Post("/charges/_authorize", req)
 }
 
 func (client *BillingClient) CancelAuthorizedCharge(consultationID string) (*http.Response, error) {
