@@ -27,14 +27,17 @@ func NewBillingClient() *BillingClient {
 }
 
 type CreateAuthorizedChargeRequest struct {
-	PatientID       string     `json:"patientID"`
-	Amount          int64      `json:"amount"`
-	PaymentMethodID string     `json:"paymentMethodID"`
-	ConsultationID  string     `json:"consultationID"`
-	PractitionerID  string     `json:"practitionerID"`
-	CreateHold      bool       `json:"createHold"`
-	Service         string     `json:"service"`
-	ServiceTime     *time.Time `json:"serviceTime"`
+	PatientID              string     `json:"patientID"`
+	Amount                 int64      `json:"amount"`
+	PaymentMethodID        string     `json:"paymentMethodID"`
+	ConsultationID         string     `json:"consultationID"`
+	PractitionerID         string     `json:"practitionerID"`
+	ConsultationsPlanID    string     `json:"consultationsPlanID"`
+	ConsultationsPackageID string     `json:"consultationsPackageID"`
+	CreateHold             bool       `json:"createHold"`
+	Confirm                bool       `json:"confirm"`
+	Service                string     `json:"service"`
+	ServiceTime            *time.Time `json:"serviceTime"`
 }
 
 type CreateAuthorizedChargeResponse struct {
